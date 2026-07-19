@@ -13,7 +13,7 @@
 <script>if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}</script>
 <meta name="apple-mobile-web-app-title" content="りんたろう">
 <meta name="theme-color" content="#BDE7FF">
-<title>りんたろうのせかい</title>
+<title>りんたろうのせかい v6.1</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#BDE7FF;
@@ -59,7 +59,7 @@ svg{display:block;width:100%;height:100%;overflow:visible;}
 .starfix{position:absolute;animation:twk2 2.6s ease-in-out infinite;}
 #sunset{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:55;background:linear-gradient(rgba(255,140,66,.0),rgba(255,120,60,.55) 70%,rgba(180,80,90,.6));}
 #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;}
-#hot{position:absolute;top:0;right:0;width:17vmin;height:17vmin;z-index:90;}
+#hot{position:absolute;top:calc(1.5vmin + env(safe-area-inset-top));right:1.5vmin;width:12vmin;height:12vmin;z-index:90;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;}
 #panel{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(30,28,26,.55);z-index:95;}
 #panel.on{display:flex;}
 .pcard{width:min(86vw,480px);max-height:88vh;overflow-y:auto;touch-action:pan-y;background:#FFFDF6;border:1vmin solid #33302E;border-radius:6vmin;padding:6vmin 6vmin 5vmin;display:flex;flex-direction:column;gap:3.4vmin;}
@@ -174,6 +174,8 @@ const spark=(x,y,s,c)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0
 const wrap=(vb,inner)=>`<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><g stroke="${OUT}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 const V=i=>wrap("0 0 200 130",i), D=i=>wrap("0 0 200 170",i), A=i=>wrap("0 0 160 160",i);
 /* v6 新画風ヘルパー（スタイルボード準拠・細線） */
+const GAME_VER='v6.1';
+const gearArt=()=>'<svg viewBox="0 0 100 100"><g stroke="#33302E" stroke-width="5" stroke-linejoin="round"><circle cx="50" cy="50" r="30" fill="#FFFDF6"/><rect x="43" y="8" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="43" y="76" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="8" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><rect x="76" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><g transform="rotate(45 50 50)"><rect x="43" y="8" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="43" y="76" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="8" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><rect x="76" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/></g><circle cx="50" cy="50" r="12" fill="#B4B2A9" stroke-width="4"/></g></svg>';
 const wrapN=(vb,inner)=>`<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><g stroke="${OUT}" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 const VN=i=>wrapN("0 0 200 130",i), DN=i=>wrapN("0 0 200 170",i);
 const eyeB=(x,y,s=1)=>`<circle cx="${x}" cy="${y}" r="${8*s}" fill="#33302E" stroke="none"/><circle cx="${x-2.8*s}" cy="${y-2.8*s}" r="${2.7*s}" fill="#fff" stroke="none"/><circle cx="${x+3*s}" cy="${y+3*s}" r="${1.3*s}" fill="#fff" stroke="none"/>`;
@@ -8643,6 +8645,7 @@ let cur='title';
 function show(name){
  SCREENS.forEach(s=>$('#scr-'+s).classList.toggle('on',s===name));
  cur=name;
+ $('#hot').style.opacity=name==='home'?'1':'0';
  if(name==='home')buildHome();
  if(name==='map')mapRender();
  if(name==='puzzle')puzzleEnter();
@@ -9955,7 +9958,10 @@ function mapRender(){
     node.insertAdjacentHTML('beforeend',`<span class="st" style="left:-2vmin;right:auto;top:-2.5vmin;width:7vmin;height:7vmin;">${wrap('0 0 24 24',spark(12,12,1.5,'#FFC53D'))}</span>`);
    if(st==='done')node.insertAdjacentHTML('beforeend',`<span class="st">${starSvg()}</span>`);
    if(st==='cur'){node.insertAdjacentHTML('beforeend',`<span class="tk">${rintaroArt()}</span>`);curNode=node;}
-   node.addEventListener('pointerdown',()=>{ensureAC();
+   node.addEventListener('pointerdown',e=>{node._tp={x:e.clientX,y:e.clientY};});
+   node.addEventListener('pointerup',e=>{const p=node._tp;node._tp=null;
+    if(!p||Math.hypot(e.clientX-p.x,e.clientY-p.y)>14)return;
+    ensureAC();
     if(st==='lock'){reAnim(node,'anim-no');noS();return;}
     popS();stageStart(n);});
    row.appendChild(node);band.appendChild(row);
@@ -10061,9 +10067,16 @@ function buildTitle(){
   p.addEventListener('pointerdown',()=>{ensureAC();popS();S.min=m;save();row.querySelectorAll('.pill').forEach(q=>q.classList.remove('sel'));p.classList.add('sel');});
   row.appendChild(p);});
  t.appendChild(row);
- const hint=el('div','', 'おうちのかたへ：みぎうえ を 3びょう ながおし で せってい');
+ const hint=el('div','', 'おうちのかたへ：⚙ か みぎうえ3びょうながおし で せってい');
  hint.style.cssText='z-index:2;margin-top:2.6vmin;font-size:2.9vmin;color:#7A756C;font-weight:800;';
  t.appendChild(hint);
+ const gear=el('div','btn');gear.innerHTML=gearArt();
+ gear.style.cssText='position:absolute;right:3vmin;bottom:calc(3vmin + env(safe-area-inset-bottom));width:10vmin;height:10vmin;z-index:3;opacity:.8;';
+ gear.addEventListener('pointerdown',()=>{ensureAC();popS();openPanel();});
+ t.appendChild(gear);
+ const ver=el('div','',GAME_VER);
+ ver.style.cssText='position:absolute;left:3vmin;bottom:calc(3vmin + env(safe-area-inset-bottom));z-index:3;font-size:3vmin;color:#7A756C;font-weight:800;opacity:.85;';
+ t.appendChild(ver);
 }
 
 /* ---------- v5: gacha / buddy / evo / birthday / dance ---------- */
@@ -10868,14 +10881,20 @@ function buildEnd(){
 
 /* ---------- parent panel ---------- */
 const hot=$('#hot'),panel=$('#panel');
-let holdT=null;
-hot.addEventListener('pointerdown',e=>{holdT=setTimeout(openPanel,3000);});
-hot.addEventListener('pointerup',()=>clearTimeout(holdT));
-hot.addEventListener('pointercancel',()=>clearTimeout(holdT));
+hot.innerHTML='<div style="width:8.5vmin;height:8.5vmin;opacity:.55;">'+gearArt()+'</div>';
+let holdT=null,holdP=null;
+const inHotZone=e=>{const vm=Math.min(innerWidth,innerHeight)/100;return e.clientX>innerWidth-17*vm&&e.clientY<17*vm;};
+document.addEventListener('pointerdown',e=>{
+ if(!inHotZone(e)||panel.classList.contains('on'))return;
+ holdP={x:e.clientX,y:e.clientY};
+ clearTimeout(holdT);holdT=setTimeout(()=>{holdP=null;openPanel();},3000);});
+document.addEventListener('pointermove',e=>{if(holdP&&Math.hypot(e.clientX-holdP.x,e.clientY-holdP.y)>14){clearTimeout(holdT);holdP=null;}});
+document.addEventListener('pointerup',()=>{clearTimeout(holdT);holdP=null;});
+document.addEventListener('pointercancel',()=>{clearTimeout(holdT);holdP=null;});
 function fmtRem(){if(!started||ended)return '--:--';const r=Math.max(0,deadline-Date.now());const m=Math.floor(r/60000),s2=Math.floor(r%60000/1000);return m+':'+String(s2).padStart(2,'0');}
 function openPanel(){
  panel.innerHTML='';const card=el('div','pcard');
- card.innerHTML=`<h2>おうちのひと せってい</h2>
+ card.innerHTML=`<h2>せってい</h2>
  <div class="prow"><span class="cap">のこり</span><span class="lbl" id="remT" style="font-size:5vmin;">${fmtRem()}</span></div>
  <div class="prow"><span class="cap">じかん</span><span id="pTimes"></span></div>
  <div class="prow"><span class="cap">おと</span><div class="pill btn" id="pSound">${S.sound?'オン':'オフ'}</div></div>
@@ -10885,7 +10904,8 @@ function openPanel(){
  <div id="pLv" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5vmin;"></div>
  <div class="prow"><div class="pill btn" id="pRestart">タイトルにもどる（きろくは そのまま）</div></div>
  <div class="prow"><div class="pill btn" id="pReset" style="background:#FFE3DC;">データをぜんぶけして さいしょから</div></div>
- <div class="prow" style="justify-content:flex-end;"><div class="pill btn sel" id="pClose">とじる</div></div>`;
+ <div class="prow" style="justify-content:flex-end;"><div class="pill btn sel" id="pClose">とじる</div></div>
+ <div style="text-align:center;font-size:2.8vmin;color:#B4B2A9;font-weight:800;">りんたろうのせかい ${GAME_VER}</div>`;
  panel.appendChild(card);panel.classList.add('on');
  const tRow=card.querySelector('#pTimes');tRow.style.cssText='display:flex;gap:2vmin;';
  [10,15,30].forEach(m=>{const p=el('div','pill btn'+(S.min===m?' sel':''),m+'ふん');p.style.fontSize='3.6vmin';
