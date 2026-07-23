@@ -13,7 +13,7 @@
 <script>if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}</script>
 <meta name="apple-mobile-web-app-title" content="りんたろう">
 <meta name="theme-color" content="#BDE7FF">
-<title>りんたろうのせかい v6.4</title>
+<title>りんたろうのせかい v6.5</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#BDE7FF;
@@ -181,7 +181,7 @@ const spark=(x,y,s,c)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0
 const wrap=(vb,inner)=>`<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><g stroke="${OUT}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 const V=i=>wrap("0 0 200 130",i), D=i=>wrap("0 0 200 170",i), A=i=>wrap("0 0 160 160",i);
 /* v6 新画風ヘルパー（スタイルボード準拠・細線） */
-const GAME_VER='v6.4';
+const GAME_VER='v6.5';
 function timeTint(){const h=new Date().getHours();
  if(h>=19||h<5)return{g:'linear-gradient(rgba(34,36,92,.5),rgba(70,58,130,.32))',night:1};
  if(h>=16)return{g:'linear-gradient(rgba(255,140,60,.26),rgba(255,186,96,.16))'};
@@ -191,7 +191,7 @@ const moonArt=()=>'<svg viewBox="0 0 100 100"><g stroke="#33302E" stroke-width="
 function applyTimeSky(scr){const tt=timeTint();if(!tt)return;
  const o=el('div');o.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:1;background:'+tt.g+';';
  scr.appendChild(o);
- if(tt.night){const sb=scr.querySelector('.sunbox div');if(sb)sb.innerHTML=moonArt();
+ if(tt.night){const sb=scr.querySelector('.sunbox div');if(sb)sb.innerHTML=(typeof DECOA!=='undefined'?DECOA.moonN():moonArt());
   for(let i=0;i<5;i++){const st=el('div','tw',starSvg('#FFE28A'));
    st.style.cssText=`left:${8+Math.random()*80}%;top:${4+Math.random()*22}%;width:4vmin;height:4vmin;animation:twk 2.2s ease-in-out ${-Math.random()*2}s infinite;`;scr.appendChild(st);}}}
 const gearArt=()=>'<svg viewBox="0 0 100 100"><g stroke="#33302E" stroke-width="5" stroke-linejoin="round"><circle cx="50" cy="50" r="30" fill="#FFFDF6"/><rect x="43" y="8" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="43" y="76" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="8" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><rect x="76" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><g transform="rotate(45 50 50)"><rect x="43" y="8" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="43" y="76" width="14" height="16" rx="5" fill="#FFFDF6"/><rect x="8" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/><rect x="76" y="43" width="16" height="14" rx="5" fill="#FFFDF6"/></g><circle cx="50" cy="50" r="12" fill="#B4B2A9" stroke-width="4"/></g></svg>';
@@ -7662,6 +7662,11 @@ const FAMILY=[
  {id:'mama',n:'ママ',art:ART_C.mama},
  {id:'jiji',n:'じーじ',art:ART_C.jiji},
 ];
+function zukanSound(id){
+ const P=[[BIRDC,()=>tweet()],[BUGC,()=>{tone(1400,{type:'square',dur:.07,g:.045});tone(1650,{type:'square',dur:.07,g:.04,delay:.09});}],[SEAC,()=>{tone(500,{type:'sine',dur:.18,g:.09,slide:950});popS();}],[OLDC,()=>roar(180,.12)],[FOODC,()=>{boing();popS();}],[VEHC2,()=>honk(300)],[ANIC,()=>boing()],[BOSSC,()=>roar(220,.13)],[SPORTSC,()=>{popS();tone(1568,{type:'sine',dur:.12,g:.06});}]];
+ for(const[arr,fn]of P){if(arr.some(c=>c.id===id)){fn();return;}}
+ charSound(id);
+}
 function charSound(id){
  ({lion:()=>roar(300,.12),panda:boing,rhino:()=>roar(150,.12),
   kumo:()=>{boing();sparkleS(.1);},fdog:bark,pdog:bark,
@@ -7697,6 +7702,8 @@ const sunArt=()=>`<svg viewBox="0 0 200 200"><g class="rays" stroke="${OUT}" str
  +[0,45,90,135,180,225,270,315].map(a=>`<rect x="94" y="6" width="12" height="30" rx="6" transform="rotate(${a} 100 100)"/>`).join('')
  +`</g></g><g stroke="${OUT}" stroke-width="6"><circle cx="100" cy="100" r="52" fill="#FFC53D"/>`
  +eyeC(82,98,1.1)+eyeC(118,98,1.1)+smile(100,110,18)+cheek(70,110)+cheek(130,110)+`</g></svg>`;
+const sunArtN=()=>typeof DECOA!=='undefined'?DECOA.sunN():sunArt();
+const cloudArtN=(op=1)=>typeof DECOA!=='undefined'?DECOA['cloudN'+(1+Math.floor(Math.random()*3))]():cloudArt(op);
 const cloudArt=(op=1)=>`<svg viewBox="0 0 200 90"><g stroke="${OUT}" stroke-width="6" opacity="${op}"><ellipse cx="70" cy="55" rx="52" ry="26" fill="#fff"/><ellipse cx="130" cy="48" rx="44" ry="24" fill="#fff"/></g></svg>`;
 const houseIcon=`<svg viewBox="0 0 24 24" style="width:56%;height:56%"><g fill="none" stroke="${OUT}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 L12 3 L21 11"/><path d="M5.5 9.5 V20 H18.5 V9.5"/><path d="M10 20 V14 H14 V20"/></g></svg>`;
 const bookIcon=`<svg viewBox="0 0 24 24" style="width:54%;height:54%"><g fill="none" stroke="${OUT}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5 Q8 3.5 4 4.5 V18.5 Q8 17.5 12 19.5 Q16 17.5 20 18.5 V4.5 Q16 3.5 12 5.5 Z"/><path d="M12 5.5 V19.5"/></g></svg>`;
@@ -8415,6 +8422,7 @@ let S={cars:[],dinos:[],chars:[],stars:0,min:15,sound:1,voice:1,stage:1,hard:0,
  lv:{},lvLock:{},gp:{},town:{owned:[],placed:{},zgiven:0},daily:null,n2:[]};
 try{const raw=localStorage.getItem('rintaroWorld');if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
 S.nux=S.nux||{};
+try{seasonHats();}catch(e){}
 if(!S.lv)S.lv={};if(!S.lvLock)S.lvLock={};if(!S.town)S.town={owned:[],placed:{},zgiven:0};if(!S.n2)S.n2=[];
 if(!S.gp)S.gp={};if(S.voice==null)S.voice=1;if(!S.cs)S.cs={};
 if(S.tickets==null)S.tickets=0;if(!S.dinoLv)S.dinoLv={};if(S.buddy===undefined)S.buddy=null;
@@ -8423,7 +8431,7 @@ function save(){try{localStorage.setItem('rintaroWorld',JSON.stringify(S));}catc
 function glv(g){
  if(S.lvLock[g])return S.lvLock[g];
  return Math.max(1,Math.min(5,Math.round((S.lv[g]||1)+(S.hard?1:0))));}
-function lvUp(g,amt){if(S.lvLock[g])return;
+function lvUp(g,amt){amt*=1.3;if(S.lvLock[g])return;
  const prev=Math.floor(S.lv[g]||1);
  S.lv[g]=Math.min(5,(S.lv[g]||1)+(amt||.15));
  const now=Math.floor(S.lv[g]);
@@ -8617,7 +8625,8 @@ function bgmTick(){
   const t=bgm.nextT,i=bgm.step,bar=Math.floor(i/8)%sg.mel.length,pos=i%8;
   const vol=sg.soft?0.55:1;
   const m=sg.mel[bar][pos];
-  if(m)bNote(mf(m),t,spb*1.5,'triangle',.05*vol);
+  const bell=sg.soft||sg.inst==='bell';
+  if(m){bNote(mf(m),t,spb*1.5,bell?'sine':'triangle',.05*vol);if(bell)bNote(mf(m)*2.001,t,spb*.7,'sine',.016*vol);}
   if(pos===0||pos===4)bNote(mf(sg.prog[bar][0]-12),t,spb*2.4,'sine',.065*vol);
   const ch=sg.prog[bar][1];
   bNote(mf(ch[i%3]),t,spb*.8,'square',.014*vol);
@@ -8630,7 +8639,18 @@ function bgmPlay(name){
  bgm.step=0;bgm.nextT=AC.currentTime+0.05;
  bgm.timer=setInterval(bgmTick,60);}
 function bgmStop(){clearInterval(bgm.timer);bgm.timer=null;}
-function bgmOn(){const sng=SCREEN_SONG[cur]||'home';bgmPlay(sng);}
+function bgmOn(){
+ let sng=SCREEN_SONG[cur]||'home';
+ if(typeof WORLD_SONG!=='undefined'){
+  let w=null;
+  if(stageNow&&stageNow.conf&&typeof stageNow.conf.world==='number')w=stageNow.conf.world;
+  else if(cur==='map')w=Math.floor((S.stage-1)/10);
+  if(w!=null){
+   if(w===15||w===16)sng='sports';
+   else{const wi=w>=17?(w-17)%15:Math.min(w,14);const ws=WORLD_SONG[wi];if(ws)sng=ws;}
+  }
+ }
+ bgmPlay(sng);}
 function bgmOff(){bgmStop();bgm.song=null;}
 function lullOn(){bgmPlay('lull');}
 function lullOff(){bgmStop();bgm.song=null;}
@@ -8870,14 +8890,14 @@ const JSCN=[
  ()=>`<div style="position:absolute;inset:0;background:linear-gradient(#9ED9FF,#E8FBFF);"></div>
 <div style="position:absolute;left:-10%;bottom:-16%;width:75%;height:46%;background:#A9DE9B;border:3px solid #33302E;border-radius:50%;"></div>
 <div style="position:absolute;right:-6%;bottom:-18%;width:70%;height:44%;background:#8FCE7E;border:3px solid #33302E;border-radius:50%;"></div>
-<div style="position:absolute;right:5%;top:5%;width:24%;aspect-ratio:1;">${sunArt()}</div>
+<div style="position:absolute;right:5%;top:5%;width:24%;aspect-ratio:1;">${sunArtN()}</div>
 <div style="position:absolute;left:5%;bottom:9%;width:42%;height:46%;">${ART_D.bra()}</div>
 <div style="position:absolute;right:7%;bottom:7%;width:36%;height:32%;">${ART_V.car()}</div>`,
  ()=>`<div style="position:absolute;inset:0;background:linear-gradient(#FF9E6B,#FFE8B8);"></div>
 <div style="position:absolute;left:0;right:0;bottom:0;height:30%;background:#9C7B95;border-top:3px solid #33302E;"></div>
 <div style="position:absolute;left:4%;bottom:6%;width:44%;height:36%;">${ART_V.fire()}</div>
 <div style="position:absolute;right:5%;bottom:8%;width:40%;height:34%;">${ART_V.bus()}</div>
-<div style="position:absolute;left:38%;top:6%;width:22%;aspect-ratio:1;">${sunArt()}</div>`,
+<div style="position:absolute;left:38%;top:6%;width:22%;aspect-ratio:1;">${sunArtN()}</div>`,
  ()=>`<div style="position:absolute;inset:0;background:linear-gradient(#2C3B66,#4A5A95);"></div>
 <div style="position:absolute;left:6%;top:8%;width:20%;aspect-ratio:1;">${wrap('0 0 100 100',`<circle cx="50" cy="50" r="34" fill="#FFF3C4"/>`+eyeC(42,50,.9)+eyeC(62,50,.9)+smile(52,60,10,.9))}</div>
 <div style="position:absolute;right:8%;top:10%;width:8%;aspect-ratio:1;">${starSvg('#FFE28A')}</div>
@@ -8898,7 +8918,7 @@ const JSCN=[
 <div style="position:absolute;left:46%;bottom:8%;width:22%;height:52%;">${ART_C.mama()}</div>
 <div style="position:absolute;left:67%;bottom:8%;width:22%;height:50%;">${ART_C.jiji()}</div>
 <div style="position:absolute;right:0%;bottom:5%;width:16%;height:32%;">${ART_D.rex()}</div>
-<div style="position:absolute;right:5%;top:5%;width:16%;aspect-ratio:1;">${sunArt()}</div>`,
+<div style="position:absolute;right:5%;top:5%;width:16%;aspect-ratio:1;">${sunArtN()}</div>`,
 ];
 MINI.jig={build(){
  const s=miniShell('えあわせパズル');
@@ -9203,7 +9223,7 @@ MINI.moji={build(){
   t.style.cssText+=`left:${cx-sz/2}px;top:${cy-sz/2}px;width:${sz}px;height:${sz}px;font-size:${sz*.5}px;`;
   t.addEventListener('pointerdown',()=>{ensureAC();if(mn.busy)return;
    if(it.ok){reAnim(t,'anim-jump');t.style.background='#A8E29A';fanfare();okMark(cx,cy);starburst(cx,cy);confetti(16,cx,cy,.8);voice(target);lvUp('moji',.12);miniRoundDone(1300);}
-   else{reAnim(t,'anim-no');ngMark(cx,cy);lvDown('moji',.12);}});
+   else{reAnim(t,'anim-no');ngMark(cx,cy);voice(it.ch);lvDown('moji',.12);}});
   s.appendChild(t);});
 }};
 MINI.kazubashi={build(){
@@ -9488,7 +9508,13 @@ let THEMES=[
  {name:'おかしのくにのせかい',sky:'linear-gradient(#FFD9DF,#FFEFD9 55%,#FFF9EF)',ground:'#F5B8C9',accent:'#6FDCC0',dark:false},
 ];
 let W_N=15;
-function stageConf(n){
+function stageConf(n){const o=__stageConf(n);
+ if(S.hard){const HB={findN:2,jigN:1,memP:1,kazN:2,shpN:1,mazL:1,twins:1,balN:1};
+  for(const k in HB)if(typeof o[k]==='number')o[k]+=HB[k];
+  if(o.kazN)o.kazN=Math.min(10,o.kazN);
+  if(typeof o.count==='number')o.count=Math.min(7,o.count+1);}
+ return o;}
+function __stageConf(n){
  n=Math.max(1,Math.floor(n));
  const w0=Math.floor((n-1)/10);
  if(w0===15||w0===16)return sportConf(n,w0,(n-1)%10);
@@ -9533,7 +9559,8 @@ function sportConf(n,w,p){
  return {n,kind:'sport',world:w,sport:w===15?'soc':'yak',game:d.g,slv:d.s+(S.hard?1:0),vs:d.vs||0,fam:d.fam||0,boss:d.boss?(w===15?'keeper':'pitcher'):null};
 }
 function endlessConf(n,w,p){
- const base={n,world:w,kind:'puzzle',count:5,size:true,bob:true,twins:4,echoLen:4,jigN:6,findN:9,memP:4,kazN:6,shpN:6,mazL:5};
+ const g2=Math.min(6,Math.floor((w-17)/3));
+ const base={n,world:w,kind:'puzzle',count:Math.min(7,5+(g2>3?1:0)),size:true,bob:true,twins:Math.min(6,4+Math.floor(g2/2)),echoLen:4,jigN:Math.min(8,6+Math.floor(g2/2)),findN:Math.min(12,9+g2),memP:Math.min(6,4+Math.floor(g2/2)),kazN:Math.min(9,6+Math.floor(g2/2)),shpN:Math.min(8,6+Math.floor(g2/2)),mazL:Math.min(7,5+Math.floor(g2/3)),balN:Math.min(7,5+Math.floor(g2/3))};
  if(p===9)return base;
  const KL=['P','T','C','E','J','G','M','K','Z','O','R'];
  const k=KL[hashN(w*10+p)%KL.length];
@@ -10067,6 +10094,13 @@ function mapRender(){
   }
   const lbl=el('div','mlabel',(w+1)+'　'+th.name);
   band.appendChild(lbl);
+  const wIdx=w<15?w:(w>=17?(w-17)%15:null);
+  if(wIdx!=null&&typeof DECOB!=='undefined'){
+   const DD=Object.assign({},typeof DECOA!=='undefined'?DECOA:{},DECOB);
+   const da=DD['w'+wIdx+'a'],db=DD['w'+wIdx+'b'];
+   if(da){const dv=el('div');dv.style.cssText='position:absolute;left:1%;top:6%;width:46%;height:32%;pointer-events:none;opacity:.85;';dv.innerHTML=da();band.insertBefore(dv,band.firstChild);}
+   if(db){const dv2=el('div');dv2.style.cssText='position:absolute;right:2%;top:40%;width:36%;height:26%;pointer-events:none;opacity:.85;';dv2.innerHTML=db();band.insertBefore(dv2,band.firstChild);}
+  }
   const WMAS=[null,'kinoko','kingyo','kaigara','yamamascot','kumoc','komori','yukidaruma','chocho','ohoshi','koenmascot','mitsubachi','chochin','pipo','purin'];
   let mid=w<15?WMAS[w]:null;
   let mart=null;
@@ -10179,10 +10213,13 @@ function stageClear(n){
 /* ---------- title ---------- */
 function buildTitle(){
  const t=$('#scr-title');t.innerHTML='';
- t.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArt()+'</div>')).style.cssText='right:4vmin;top:calc(3vmin + env(safe-area-inset-top));';
- const c1=el('div','cloud',cloudArt());c1.style.cssText='width:26vmin;top:calc(2vmin + env(safe-area-inset-top));animation-duration:52s;';t.appendChild(c1);
- const c2=el('div','cloud',cloudArt(.85));c2.style.cssText='width:22vmin;top:63%;animation-duration:74s;animation-delay:-30s;';t.appendChild(c2);
+ t.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArtN()+'</div>')).style.cssText='right:4vmin;top:calc(3vmin + env(safe-area-inset-top));';
+ const c1=el('div','cloud',cloudArtN());c1.style.cssText='width:26vmin;top:calc(2vmin + env(safe-area-inset-top));animation-duration:52s;';t.appendChild(c1);
+ const c2=el('div','cloud',cloudArtN(.85));c2.style.cssText='width:22vmin;top:63%;animation-duration:74s;animation-delay:-30s;';t.appendChild(c2);
  const hill=el('div','hill');hill.style.cssText='width:160vw;height:60vw;background:#A9DE9B;left:-30vw;bottom:-34vw;border:1vmin solid #33302E;';t.appendChild(hill);
+ if(typeof DECOA!=='undefined'){
+  const g1=el('div');g1.style.cssText='position:absolute;left:5vmin;bottom:calc(7vmin + env(safe-area-inset-bottom));width:15vmin;height:9vmin;z-index:2;pointer-events:none;';g1.innerHTML=DECOA.flowerN();t.appendChild(g1);
+  const g2=el('div');g2.style.cssText='position:absolute;right:15vmin;bottom:calc(4.5vmin + env(safe-area-inset-bottom));width:13vmin;height:8vmin;z-index:2;pointer-events:none;';g2.innerHTML=DECOA.grassN();t.appendChild(g2);}
  const wrap1=el('div','', '');wrap1.style.cssText='display:flex;flex-direction:column;align-items:center;gap:1vmin;margin-top:calc(21vmin + env(safe-area-inset-top));z-index:2;';
  const chars=[...'りんたろうの'].concat(['せ','か','い']);
  const cols=['#FF5A3C','#FFC53D','#4CB944','#3E8DE3','#F272A8','#9B59D0'];
@@ -10193,6 +10230,7 @@ function buildTitle(){
  const hDino=el('div','idle',ART_D.bra());hDino.style.cssText='width:30vmin;height:26vmin;';
  const hRin=el('div','idle',rintaroArt());hRin.style.cssText='width:24vmin;height:24vmin;animation-delay:-.7s;';
  const hCar=el('div','idle',ART_V.car());hCar.style.cssText='width:27vmin;height:18vmin;animation-delay:-1.4s;';
+ hDino.dataset.blink='bra';hRin.dataset.blink='rintaro';hCar.dataset.blink='car';
  heroRow.appendChild(hDino);heroRow.appendChild(hRin);heroRow.appendChild(hCar);t.appendChild(heroRow);
  const start=el('div','btn','<div class="lbl" style="font-size:8.5vmin;">あそぶ</div>');
  start.style.cssText='z-index:2;margin-top:3.5vmin;background:#FFC53D;border:1.1vmin solid #33302E;border-radius:99px;padding:3.4vmin 13vmin;box-shadow:0 1.4vmin 0 rgba(51,48,46,.22);animation:pulse 1.6s ease-in-out infinite;';
@@ -10215,10 +10253,41 @@ function buildTitle(){
  ver.style.cssText='position:absolute;left:3vmin;bottom:calc(3vmin + env(safe-area-inset-bottom));z-index:3;font-size:3vmin;color:#7A756C;font-weight:800;opacity:.85;';
  t.appendChild(ver);
  applyTimeSky(t);
+ applySeason(t);
 }
 
 /* ---------- v5: gacha / buddy / evo / birthday / dance ---------- */
 function crownArt(){return wrap('0 0 80 50',`<path d="M10 40 L16 14 L30 30 L40 8 L50 30 L64 14 L70 40 Z" fill="#FFC53D"/><circle cx="40" cy="40" r="4" fill="#FF5A3C" stroke="none"/>`);}
+let ARTB={};
+function blinkHtml(id){
+ if(id==='car')return ART_V.car({closed:1});
+ if(id==='rintaro'&&ARTB.rintaroB){const base=ARTB.rintaroB();
+  if(!S.hat||typeof ART_H==='undefined'||!ART_H[S.hat])return base;
+  return `<div style="position:relative;width:100%;height:100%;">${base}<div style="position:absolute;left:50%;top:-9%;transform:translateX(-50%);width:62%;height:44%;">${ART_H[S.hat]()}</div></div>`;}
+ const f=ARTB[id+'B'];return f?f():null;}
+setInterval(()=>{
+ if(document.hidden)return;
+ document.querySelectorAll('[data-blink]').forEach(elm=>{
+  if(elm.dataset.blinking||Math.random()>.45)return;
+  const id=elm.dataset.blink;const bh=blinkHtml(id);if(!bh)return;
+  const orig=elm.innerHTML;elm.dataset.blinking=1;elm.innerHTML=bh;
+  setTimeout(()=>{if(document.body.contains(elm)){elm.innerHTML=(id==='rintaro')?rintaroArt():orig;}delete elm.dataset.blinking;},170);});
+},2800);
+function seasonNow(){const mo=new Date().getMonth()+1;
+ if(mo===7||mo===8)return 'natsumatsuri';if(mo===10)return 'halloween';
+ if(mo===12)return 'christmas';if(mo===1)return 'oshogatsu';if(mo===5)return 'kodomonohi';return null;}
+function applySeason(scr){
+ if(typeof DECOB==='undefined')return;const sn=seasonNow();if(!sn)return;
+ const a=DECOB[sn+'_a'],b=DECOB[sn+'_b'];
+ if(a){const d=el('div');d.style.cssText='position:absolute;left:2vmin;top:calc(17vmin + env(safe-area-inset-top));width:32vmin;height:19vmin;pointer-events:none;z-index:1;opacity:.95;';d.innerHTML=a();scr.appendChild(d);}
+ if(b){const d2=el('div');d2.style.cssText='position:absolute;right:2vmin;bottom:20vmin;width:28vmin;height:17vmin;pointer-events:none;z-index:1;opacity:.95;';d2.innerHTML=b();scr.appendChild(d2);}}
+function seasonHats(){
+ if(typeof DECOB==='undefined')return;
+ const MAPS={natsumatsuri:['hat_hachimaki','はちまき（きせつ）'],halloween:['hat_obakehood','おばけフード（きせつ）'],christmas:['hat_tonakai','トナカイ（きせつ）'],oshogatsu:['hat_kagami','かがみもち（きせつ）'],kodomonohi:['hat_kabuto','かぶと（きせつ）']};
+ const sn=seasonNow();
+ for(const k in MAPS){const[hid,nm]=MAPS[k];
+  if(k===sn&&DECOB[hid]&&!HATS.some(h=>h.id===hid)){ART_H[hid]=DECOB[hid];HATS.push({id:hid,n:nm});}
+  if(k!==sn&&S.hat===hid)S.hat=null;}}
 function rintaroArt(){
  const base=ART_C.rintaro();
  if(!S.hat||typeof ART_H==='undefined'||!ART_H[S.hat])return base;
@@ -10466,16 +10535,16 @@ function danceStart(){
 /* ---------- home ---------- */
 function buildHome(){
  const h=$('#scr-home');h.innerHTML='';
- h.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArt()+'</div>')).style.cssText='left:3vmin;top:calc(2vmin + env(safe-area-inset-top));';
- const c1=el('div','cloud',cloudArt());c1.style.cssText='width:26vmin;top:calc(3vmin + env(safe-area-inset-top));animation-duration:60s;animation-delay:-20s;';h.appendChild(c1);
+ h.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArtN()+'</div>')).style.cssText='left:3vmin;top:calc(2vmin + env(safe-area-inset-top));';
+ const c1=el('div','cloud',cloudArtN());c1.style.cssText='width:26vmin;top:calc(3vmin + env(safe-area-inset-top));animation-duration:60s;animation-delay:-20s;';h.appendChild(c1);
  const wrapT=el('div');wrapT.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.4vmin;width:100%;padding-top:calc(8vmin + env(safe-area-inset-top));z-index:2;';
  const hero=el('div','tile btn');
  hero.style.cssText+='height:26%;min-height:130px;background:linear-gradient(#FFE9B8,#FFF6E0);flex-direction:column;justify-content:center;gap:1.6vmin;';
  hero.innerHTML=`<div class="lbl" style="font-size:7vmin;">ぼうけんマップ</div>
  <div style="display:flex;align-items:center;gap:2.5vmin;">
-  <div style="width:20vmin;height:13vmin;">${ART_V.car()}</div>
+  <div style="width:20vmin;height:13vmin;" data-blink="car">${ART_V.car()}</div>
   <div class="lbl" style="font-size:4.4vmin;background:#FFFDF6;border:.7vmin solid #33302E;border-radius:99px;padding:.8vmin 3.6vmin;">${S.stage<=171?(S.stage-1)+' / 170':(S.stage-1)+' クリア'}</div>
-  <div style="width:16vmin;height:13.5vmin;">${ART_D.rex()}</div>
+  <div style="width:16vmin;height:13.5vmin;" data-blink="rex">${ART_D.rex()}</div>
  </div>`;
  tapify(hero,()=>{ensureAC();popS();show('map');});
  wrapT.appendChild(hero);
@@ -10492,6 +10561,7 @@ function buildHome(){
  hg.addEventListener('pointercancel',()=>clearTimeout(hgT));
  h.appendChild(hg);
  applyTimeSky(h);
+ applySeason(h);
  mkMini('linear-gradient(#CFF0FF,#EAF9FF)','くるま',ART_V.fire(),'puzzle');
  mkMini('linear-gradient(#D9F5D2,#EDFBE8)','きょうりゅう',ART_D.bra(),'dino');
  mkMini('linear-gradient(#FFEFD2,#FFF8E8)','おんがく',ART_A.ka(),'music');
@@ -10599,7 +10669,7 @@ function pzBuild(){
  s.appendChild(road);
  if(theme&&theme.dark)for(let i=0;i<6;i++){const st=el('div','starfix',starSvg('#FFE28A'));
   st.style.cssText=`left:${5+Math.random()*88}%;top:${4+Math.random()*22}%;width:3.5vmin;height:3.5vmin;animation-delay:-${Math.random()*2.6}s;`;s.appendChild(st);}
- const c1=el('div','cloud',cloudArt());c1.style.cssText='width:24vmin;top:calc(16vmin + env(safe-area-inset-top));animation-duration:66s;animation-delay:-10s;';s.appendChild(c1);
+ const c1=el('div','cloud',cloudArtN());c1.style.cssText='width:24vmin;top:calc(16vmin + env(safe-area-inset-top));animation-duration:66s;animation-delay:-10s;';s.appendChild(c1);
  if(sm){const bn=el('div','lbl','ステージ '+sm.n);
   bn.style.cssText='position:absolute;top:calc(4vmin + env(safe-area-inset-top));left:50%;transform:translateX(-50%);font-size:4.6vmin;background:#FFFDF6;border:.8vmin solid #33302E;border-radius:99px;padding:1vmin 5vmin;z-index:3;';
   s.appendChild(bn);}
@@ -10765,8 +10835,8 @@ function dnBuild(){
  const s=$('#scr-dino');s.innerHTML='';
  const h1=el('div','hill');h1.style.cssText='width:130vw;height:56vw;background:#8FCE7E;left:-30vw;bottom:-30vw;border:1vmin solid #33302E;';s.appendChild(h1);
  const h2=el('div','hill');h2.style.cssText='width:120vw;height:52vw;background:#A9DE9B;right:-36vw;bottom:-30vw;border:1vmin solid #33302E;';s.appendChild(h2);
- s.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArt()+'</div>')).style.cssText='right:4vmin;top:calc(3vmin + env(safe-area-inset-top));';
- const c1=el('div','cloud',cloudArt());c1.style.cssText='width:26vmin;top:calc(5vmin + env(safe-area-inset-top));animation-duration:58s;animation-delay:-25s;';s.appendChild(c1);
+ s.appendChild(el('div','sunbox','<div style="width:20vmin;height:20vmin;">'+sunArtN()+'</div>')).style.cssText='right:4vmin;top:calc(3vmin + env(safe-area-inset-top));';
+ const c1=el('div','cloud',cloudArtN());c1.style.cssText='width:26vmin;top:calc(5vmin + env(safe-area-inset-top));animation-duration:58s;animation-delay:-25s;';s.appendChild(c1);
  s.appendChild(backBtn(()=>{const wasStage=!!dn.stage;show(wasStage?'map':'home');}));
  const pt=el('div','creature btn',ART_D.pte());
  pt.style.cssText='width:26vmin;height:22vmin;top:14%;left:0;animation:flyacross 17s linear infinite;';
@@ -10979,7 +11049,9 @@ function zukanRender(){
   if(card.dataset.has==='1'){const id=card.dataset.id;
    if(VEH.some(v=>v.id===id))vehSound(id);
    else if(HATCH.some(h=>h.id===id)){if(id==='rainbowD'){roar(200,.12);sparkleS();}else roar(260,.12);}
-   else charSound(id);}
+   else zukanSound(id);
+   const cc=GPOOL.find(c=>c.id===id)||CHARS.find(c=>c.id===id)||BOSSC.find(c=>c.id===id)||SPORTSC.find(c=>c.id===id)||VEH.find(c=>c.id===id)||HATCH.find(c=>c.id===id)||FAMILY.find(c=>c.id===id);
+   if(cc)voice(cc.n);}
   else popS();
  });
  s.appendChild(list);
@@ -11115,6 +11187,697 @@ let rsT=null;
 addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{fxResize();if(cur==='puzzle')pzBuild();if(cur==='mini'&&mn.mode&&!mn.busy)MINI[mn.mode].build();},350);});
 function loop(){fxTick();timerTick();requestAnimationFrame(loop);}
 window.__rw={end:endSequence,skip:m=>{deadline-=m*60000;},unlockAll:()=>{S.cars=VEH.map(v=>v.id);S.dinos=HATCH.map(h=>h.id);S.stars=12;save();},setStage:n=>{S.stage=n;save();}};
+/* ===== v6.5 部隊納品 統合 ===== */
+const WSONGS={
+umi:{bpm:88,hat:false,
+ prog:[[41,[57,60,65]],[46,[58,62,65]],[41,[57,60,65]],[36,[55,60,64]],[38,[57,62,65]],[46,[58,62,65]],[43,[55,58,62]],[36,[55,60,64]]],
+ mel:[[65,69,72,69,65,69,72,77],[70,74,77,74,70,74,77,74],[65,69,72,74,72,69,65,69],[72,76,72,0,72,0,0,0],
+      [74,77,81,77,74,77,81,82],[82,86,89,86,82,86,89,86],[79,82,86,82,79,82,86,82],[72,76,72,0,72,0,0,0]]},
+sora:{bpm:112,hat:false,
+ prog:[[38,[57,62,66]],[43,[55,59,62]],[45,[57,61,64]],[38,[57,62,66]],[47,[59,62,66]],[43,[55,59,62]],[45,[57,61,64]],[38,[57,62,66]]],
+ mel:[[62,64,66,67,69,71,73,74],[67,69,71,73,74,76,78,79],[69,74,78,74,69,74,78,81],[74,69,62,0,62,0,0,0],
+      [71,74,78,74,71,74,78,79],[67,71,74,71,67,71,74,71],[69,73,76,78,76,73,69,73],[74,69,62,0,69,0,0,0]]},
+yoru:{bpm:72,hat:false,soft:true,
+ prog:[[36,[55,60,64]],[45,[57,60,64]],[41,[57,60,65]],[43,[55,59,62]],[36,[55,60,64]],[45,[57,60,64]],[38,[57,62,65]],[43,[55,59,62]]],
+ mel:[[72,0,76,0,79,0,84,0],[81,0,84,0,88,0,84,0],[77,0,81,0,84,0,81,0],[79,0,0,0,79,0,0,0],
+      [72,0,79,0,84,0,88,0],[81,0,84,0,89,0,84,0],[74,0,77,0,81,0,77,0],[79,0,76,0,72,0,0,0]]},
+yuki:{bpm:92,hat:false,
+ prog:[[43,[55,59,62]],[48,[55,60,64]],[43,[55,59,62]],[38,[57,62,66]],[40,[55,59,64]],[45,[57,60,64]],[38,[57,62,66]],[43,[55,59,62]]],
+ mel:[[67,71,74,79,74,71,67,71],[72,76,79,84,79,76,72,76],[67,74,79,83,79,74,67,74],[74,79,74,0,71,0,0,0],
+      [76,79,83,79,76,79,83,84],[81,84,88,84,81,84,88,84],[86,78,86,81,86,78,86,81],[74,79,74,0,67,0,0,0]]},
+niji:{bpm:118,hat:false,
+ prog:[[48,[55,60,64]],[41,[57,60,65]],[43,[55,59,62]],[48,[55,60,64]],[45,[57,60,64]],[43,[55,59,62]],[41,[57,60,65]],[48,[55,60,64]]],
+ mel:[[72,76,79,84,79,76,72,79],[77,81,84,89,84,81,77,81],[79,83,86,84,86,83,79,83],[72,79,84,0,79,0,0,0],
+      [81,84,88,84,81,84,88,89],[79,83,86,83,79,86,83,79],[77,81,84,88,84,81,77,81],[72,79,84,0,76,0,0,0]]},
+matsuri:{bpm:126,hat:true,
+ prog:[[38,[57,62,66]],[45,[57,61,64]],[47,[59,62,66]],[43,[55,59,62]],[38,[57,62,66]],[43,[55,59,62]],[45,[57,61,64]],[38,[57,62,66]]],
+ mel:[[74,78,81,78,74,78,81,86],[81,83,86,83,81,83,86,81],[83,86,88,86,83,86,88,83],[83,86,0,0,83,0,0,0],
+      [74,78,81,86,81,78,74,78],[83,86,83,88,83,86,83,86],[81,83,86,88,86,83,81,83],[74,78,81,0,74,0,0,0]]},
+uchu:{bpm:100,hat:false,
+ prog:[[36,[55,60,64]],[41,[58,60,65]],[45,[57,60,64]],[43,[55,60,62]],[41,[57,60,65]],[45,[57,60,64]],[41,[58,60,65]],[43,[55,60,62]]],
+ mel:[[72,76,80,76,72,0,76,0],[76,80,84,80,76,0,80,0],[80,84,88,84,80,0,84,0],[84,88,84,0,80,0,0,0],
+      [88,84,80,76,72,0,76,0],[72,76,72,0,76,80,76,0],[80,76,72,0,76,80,84,0],[76,72,0,0,72,0,0,0]]},
+okashi:{bpm:120,hat:false,
+ prog:[[45,[57,61,64]],[42,[57,61,66]],[50,[57,62,66]],[40,[56,59,64]],[45,[57,61,64]],[42,[57,61,66]],[47,[59,62,66]],[40,[56,59,64]]],
+ mel:[[69,0,73,0,76,0,81,0],[78,0,81,0,85,0,81,0],[74,0,78,0,81,0,78,0],[76,80,76,0,76,0,0,0],
+      [0,69,0,76,0,81,0,76],[0,78,0,85,0,86,0,85],[0,71,0,74,0,78,0,74],[0,76,0,0,69,0,0,0]]},
+};
+const WORLD_SONG=['home','map','pop','umi','map','sora','yoru','yuki','niji','yoru','pop','niji','matsuri','uchu','okashi'];
+Object.assign(SONGS,WSONGS);
+const DECOA={
+
+// ---------- A. 空の基本パーツ (0 0 100 100) ----------
+
+sunN:()=>wrapN("0 0 100 100",
+ `<circle cx="50" cy="54" r="29" fill="#FFC53D"/>`
+ +[0,45,90,135,180,225,270,315].map(a=>`<g transform="rotate(${a} 50 54)"><rect x="46.5" y="3" width="7" height="17" rx="3.5" fill="#FFC53D"/></g>`).join("")
+ +`<path d="M35 47 Q41 39 47 47" fill="none" stroke-width="3.5"/>`
+ +`<path d="M53 47 Q59 39 65 47" fill="none" stroke-width="3.5"/>`
+ +`<path d="M40 65 Q50 74 60 65" fill="none" stroke-width="3.5"/>`
+ +cheekB(32,58,1)+cheekB(68,58,1)),
+
+moonN:()=>wrapN("0 0 100 100",
+ `<path d="M64 12 C36 12 16 32 16 55 C16 78 36 98 64 98 C48 88 40 74 40 55 C40 36 48 22 64 12 Z" fill="#FFE29B"/>`
+ +eyeB(26,46,0.8)+eyeB(30,64,0.8)
+ +`<path d="M25 74 Q30 79 35 75" fill="none" stroke-width="3"/>`
+ +cheekB(20,58,0.75)+cheekB(37,70,0.7)
+ +spark(80,22,0.7,"#FFE9B8")+spark(88,42,0.55,"#fff")),
+
+cloudN1:()=>wrapN("0 0 100 100",
+ `<ellipse cx="50" cy="65" rx="42" ry="20" fill="#fff"/>`
+ +`<circle cx="24" cy="52" r="18" fill="#fff"/>`
+ +`<circle cx="45" cy="41" r="23" fill="#fff"/>`
+ +`<circle cx="69" cy="47" r="19" fill="#fff"/>`
+ +`<circle cx="83" cy="58" r="15" fill="#fff"/>`
+ +`<ellipse cx="50" cy="75" rx="36" ry="8" fill="#BFE0F5" opacity=".55"/>`
+ +`<ellipse cx="30" cy="60" rx="11" ry="5" fill="#BFE0F5" opacity=".35"/>`),
+
+cloudN2:()=>wrapN("0 0 100 100",
+ `<ellipse cx="50" cy="60" rx="32" ry="15" fill="#fff"/>`
+ +`<circle cx="30" cy="48" r="14" fill="#fff"/>`
+ +`<circle cx="50" cy="40" r="17" fill="#fff"/>`
+ +`<circle cx="68" cy="46" r="14" fill="#fff"/>`
+ +`<circle cx="80" cy="54" r="11" fill="#fff"/>`
+ +`<ellipse cx="50" cy="68" rx="26" ry="6" fill="#BFE0F5" opacity=".5"/>`),
+
+cloudN3:()=>wrapN("0 0 100 100",
+ `<ellipse cx="50" cy="62" rx="24" ry="11" fill="#fff"/>`
+ +`<circle cx="38" cy="52" r="10" fill="#fff"/>`
+ +`<circle cx="52" cy="46" r="13" fill="#fff"/>`
+ +`<circle cx="65" cy="52" r="10" fill="#fff"/>`
+ +`<circle cx="46" cy="41" r="6" fill="#fff"/>`
+ +`<ellipse cx="50" cy="68" rx="20" ry="5" fill="#BFE0F5" opacity=".5"/>`),
+
+// ---------- B. 丘の飾り (0 0 100 60) ----------
+
+grassN:()=>wrapN("0 0 100 60",
+ `<ellipse cx="50" cy="57" rx="24" ry="5" fill="#2E6B47"/>`
+ +`<path d="M25 58 Q30.85 37 28 16 Q37.15 37 43 58 Z" fill="#3E8F5C"/>`
+ +`<path d="M36 58 Q41.2 34 40 10 Q46.8 34 52 58 Z" fill="#4CB944"/>`
+ +`<path d="M46 58 Q51.2 35 58 12 Q56.8 35 62 58 Z" fill="#5FD86A"/>`
+ +`<path d="M55 58 Q60.85 38 70 18 Q67.15 38 73 58 Z" fill="#4CB944"/>`
+ +`<path d="M43 58 Q47.55 33 50 8 Q52.45 33 57 58 Z" fill="#3E8F5C"/>`),
+
+flowerN:()=>wrapN("0 0 100 60",
+ `<path d="M32 58 L32 26" fill="none" stroke="#4CB944" stroke-width="3.5"/>`
+ +`<path d="M32 40 Q24 38 20 30" fill="none" stroke="#4CB944" stroke-width="3"/>`
+ +`<circle cx="32" cy="14" r="5.5" fill="#F272A8"/>`
+ +`<circle cx="24" cy="19" r="5.5" fill="#F272A8"/>`
+ +`<circle cx="40" cy="19" r="5.5" fill="#F272A8"/>`
+ +`<circle cx="25" cy="27" r="5.5" fill="#F272A8"/>`
+ +`<circle cx="39" cy="27" r="5.5" fill="#F272A8"/>`
+ +`<circle cx="32" cy="20" r="5.5" fill="#FFC53D"/>`
+ +`<path d="M68 58 L68 32" fill="none" stroke="#4CB944" stroke-width="3.5"/>`
+ +`<circle cx="68" cy="20" r="5" fill="#9B59D0"/>`
+ +`<circle cx="61" cy="24" r="5" fill="#9B59D0"/>`
+ +`<circle cx="75" cy="24" r="5" fill="#9B59D0"/>`
+ +`<circle cx="63" cy="30" r="5" fill="#9B59D0"/>`
+ +`<circle cx="73" cy="30" r="5" fill="#9B59D0"/>`
+ +`<circle cx="68" cy="25" r="5" fill="#FFC53D"/>`),
+
+stoneN:()=>wrapN("0 0 100 60",
+ `<path d="M18 56 Q10 38 28 32 Q46 26 50 42 Q54 56 36 58 Q22 59 18 56 Z" fill="#AEB8C2"/>`
+ +`<circle cx="66" cy="52" r="12" fill="#C7CFD6"/>`
+ +`<circle cx="80" cy="56" r="7" fill="#9BA8B4"/>`
+ +`<path d="M26 40 Q32 36 38 38" fill="none" stroke-width="3"/>`
+ +`<path d="M30 48 Q36 46 41 49" fill="none" stroke-width="3"/>`
+ +`<path d="M62 47 Q66 45 70 47" fill="none" stroke-width="3"/>`),
+
+// ---------- C. 世界背景装飾 (0 0 200 120) ----------
+
+// w0 まちのせかい
+w0a:()=>wrapN("0 0 200 120",
+ `<rect x="10" y="70" width="22" height="50" fill="#9AA6D4"/>`
+ +`<rect x="34" y="50" width="26" height="70" fill="#6B76A8"/>`
+ +`<rect x="64" y="64" width="20" height="56" fill="#9AA6D4"/>`
+ +`<rect x="88" y="40" width="30" height="80" fill="#6B76A8"/>`
+ +`<rect x="122" y="58" width="24" height="62" fill="#9AA6D4"/>`
+ +`<rect x="150" y="48" width="28" height="72" fill="#6B76A8"/>`
+ +`<rect x="182" y="66" width="14" height="54" fill="#9AA6D4"/>`
+ +`<rect x="40" y="60" width="5" height="5" fill="#FFC53D"/>`
+ +`<rect x="48" y="76" width="5" height="5" fill="#FFC53D"/>`
+ +`<rect x="96" y="52" width="5" height="5" fill="#FFC53D"/>`
+ +`<rect x="104" y="68" width="5" height="5" fill="#FFC53D"/>`
+ +`<rect x="158" y="60" width="5" height="5" fill="#FFC53D"/>`
+ +`<rect x="18" y="82" width="5" height="5" fill="#FFC53D"/>`),
+
+w0b:()=>wrapN("0 0 200 120",
+ `<rect x="20" y="86" width="34" height="30" fill="#F3D9B1"/>`
+ +`<path d="M14 86 L37 62 L60 86 Z" fill="#E36B4F"/>`
+ +`<rect x="64" y="78" width="30" height="38" fill="#E8E2CF"/>`
+ +`<path d="M58 78 L79 54 L100 78 Z" fill="#5B9B6E"/>`
+ +`<rect x="108" y="90" width="28" height="26" fill="#F3D9B1"/>`
+ +`<path d="M102 90 L122 70 L142 90 Z" fill="#6B87B8"/>`
+ +`<rect x="150" y="82" width="32" height="34" fill="#E8E2CF"/>`
+ +`<path d="M144 82 L166 58 L188 82 Z" fill="#B07BC4"/>`
+ +`<rect x="32" y="98" width="10" height="18" fill="#8A5A3B"/>`
+ +`<rect x="76" y="94" width="9" height="20" fill="#8A5A3B"/>`
+ +`<rect x="116" y="100" width="9" height="16" fill="#8A5A3B"/>`
+ +`<rect x="160" y="96" width="10" height="20" fill="#8A5A3B"/>`),
+
+// w1 もりのせかい
+w1a:()=>wrapN("0 0 200 120",
+ `<path d="M96 118 L100 62 L108 62 L112 118 Z" fill="#6B4A32"/>`
+ +`<circle cx="78" cy="58" r="26" fill="#2E6B47"/>`
+ +`<circle cx="104" cy="40" r="30" fill="#3E9B5C"/>`
+ +`<circle cx="130" cy="58" r="26" fill="#2E6B47"/>`
+ +`<circle cx="90" cy="70" r="22" fill="#3E9B5C"/>`
+ +`<circle cx="118" cy="70" r="22" fill="#2E6B47"/>`
+ +`<circle cx="98" cy="26" r="13" fill="#5CBE7A"/>`),
+
+w1b:()=>wrapN("0 0 200 120",
+ `<rect x="46" y="90" width="11" height="24" fill="#F3E6D0"/>`
+ +`<path d="M30 90 Q30 64 51.5 64 Q73 64 73 90 Z" fill="#E36B4F"/>`
+ +`<circle cx="42" cy="76" r="3.2" fill="#fff"/><circle cx="58" cy="72" r="3" fill="#fff"/><circle cx="66" cy="80" r="2.8" fill="#fff"/>`
+ +`<rect x="98" y="98" width="8" height="18" fill="#F3E6D0"/>`
+ +`<path d="M86 98 Q86 78 102 78 Q118 78 118 98 Z" fill="#9B7BC4"/>`
+ +`<circle cx="96" cy="88" r="2.6" fill="#fff"/><circle cx="108" cy="90" r="2.6" fill="#fff"/>`
+ +`<rect x="140" y="94" width="9" height="20" fill="#F3E6D0"/>`
+ +`<path d="M126 94 Q126 72 144.5 72 Q163 72 163 94 Z" fill="#E8B54F"/>`
+ +`<circle cx="136" cy="83" r="2.8" fill="#fff"/><circle cx="152" cy="84" r="2.8" fill="#fff"/>`),
+
+// w2 ゆうやけのせかい
+w2a:()=>wrapN("0 0 200 120",
+ `<g transform="rotate(-15 30 55)"><ellipse cx="30" cy="62" rx="1.8" ry="9" fill="#5C3A52"/><ellipse cx="30" cy="55" rx="11" ry="2.6" fill="#5C3A52" opacity=".8"/><circle cx="30" cy="47" r="2.2" fill="#5C3A52"/></g>`
+ +`<g transform="rotate(10 70 40)"><ellipse cx="70" cy="46" rx="1.5" ry="7.6" fill="#5C3A52"/><ellipse cx="70" cy="40" rx="9.3" ry="2.2" fill="#5C3A52" opacity=".8"/><circle cx="70" cy="33" r="1.9" fill="#5C3A52"/></g>`
+ +`<g transform="rotate(-8 110 60)"><ellipse cx="110" cy="68" rx="2" ry="9.9" fill="#5C3A52"/><ellipse cx="110" cy="60" rx="12" ry="2.9" fill="#5C3A52" opacity=".8"/><circle cx="110" cy="51" r="2.4" fill="#5C3A52"/></g>`
+ +`<g transform="rotate(18 150 42)"><ellipse cx="150" cy="48" rx="1.4" ry="7.2" fill="#5C3A52"/><ellipse cx="150" cy="42" rx="8.8" ry="2.1" fill="#5C3A52" opacity=".8"/><circle cx="150" cy="36" r="1.8" fill="#5C3A52"/></g>`
+ +`<g transform="rotate(-20 180 58)"><ellipse cx="180" cy="64" rx="1.6" ry="8.1" fill="#5C3A52"/><ellipse cx="180" cy="58" rx="9.9" ry="2.3" fill="#5C3A52" opacity=".8"/><circle cx="180" cy="51" r="2" fill="#5C3A52"/></g>`),
+
+w2b:()=>wrapN("0 0 200 120",
+ `<path d="M30 118 Q24 96 18 58" fill="none" stroke="#8A5A6B" stroke-width="3"/><ellipse cx="18" cy="58" rx="9" ry="3.2" fill="#8A5A6B" transform="rotate(-101 18 58)"/>`
+ +`<path d="M50 118 Q48 89 46 44" fill="none" stroke="#6B4058" stroke-width="3"/><ellipse cx="46" cy="44" rx="9" ry="3.2" fill="#6B4058" transform="rotate(-93 46 44)"/>`
+ +`<path d="M70 118 Q75 93 80 52" fill="none" stroke="#8A5A6B" stroke-width="3"/><ellipse cx="80" cy="52" rx="9" ry="3.2" fill="#8A5A6B" transform="rotate(-81 80 52)"/>`
+ +`<path d="M130 118 Q125 92 120 50" fill="none" stroke="#6B4058" stroke-width="3"/><ellipse cx="120" cy="50" rx="9" ry="3.2" fill="#6B4058" transform="rotate(-98 120 50)"/>`
+ +`<path d="M150 118 Q154 90 158 46" fill="none" stroke="#8A5A6B" stroke-width="3"/><ellipse cx="158" cy="46" rx="9" ry="3.2" fill="#8A5A6B" transform="rotate(-84 158 46)"/>`
+ +`<path d="M170 118 Q176 95 182 56" fill="none" stroke="#6B4058" stroke-width="3"/><ellipse cx="182" cy="56" rx="9" ry="3.2" fill="#6B4058" transform="rotate(-79 182 56)"/>`),
+
+// w3 うみのせかい
+w3a:()=>wrapN("0 0 200 120",
+ `<path d="M0 90 Q20 76 40 90 Q60 104 80 90 Q100 76 120 90 Q140 104 160 90 Q180 76 200 90 L200 120 L0 120 Z" fill="#2B6E8F"/>`
+ +`<path d="M0 102 Q20 92 40 102 Q60 112 80 102 Q100 92 120 102 Q140 112 160 102 Q180 92 200 102 L200 120 L0 120 Z" fill="#1F5470"/>`
+ +`<path d="M14 82 Q20 76 26 82" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/>`
+ +`<path d="M94 82 Q100 76 106 82" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/>`
+ +`<path d="M174 82 Q180 76 186 82" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/>`
+ +`<path d="M54 96 Q60 90 66 96" fill="none" stroke="#fff" stroke-width="3" opacity=".45"/>`
+ +`<path d="M134 96 Q140 90 146 96" fill="none" stroke="#fff" stroke-width="3" opacity=".45"/>`),
+
+w3b:()=>wrapN("0 0 200 120",
+ `<path d="M92 118 Q94 50 100 30 Q106 50 108 118 Z" fill="#F3E6D0"/>`
+ +`<path d="M100 34 L142 100 L100 100 Z" fill="#fff"/>`
+ +`<path d="M100 48 L70 100 L100 100 Z" fill="#5FA8F0"/>`
+ +`<path d="M100 30 L113 34 L100 38 Z" fill="#FFC53D"/>`
+ +`<path d="M66 106 L134 106 L124 118 L76 118 Z" fill="#E36B4F"/>`
+ +`<path d="M60 108 Q100 118 140 108" fill="none" stroke="#2B6E8F" stroke-width="4"/>`
+ +`<ellipse cx="100" cy="112" rx="46" ry="7" fill="#2B6E8F" opacity=".3"/>`),
+
+// w4 やまのせかい
+w4a:()=>wrapN("0 0 200 120",
+ `<path d="M0 118 L38 46 L76 118 Z" fill="#6B7BA0"/>`
+ +`<path d="M50 118 L98 30 L146 118 Z" fill="#4F5F85"/>`
+ +`<path d="M120 118 L160 58 L200 118 Z" fill="#6B7BA0"/>`
+ +`<path d="M28 66 L38 46 L48 66 Z" fill="#EAF6FF"/>`
+ +`<path d="M88 46 L98 30 L108 46 Z" fill="#EAF6FF"/>`
+ +`<path d="M144 74 L160 58 L176 74 Z" fill="#EAF6FF"/>`
+ +`<ellipse cx="100" cy="112" rx="88" ry="8" fill="#EAF6FF" opacity=".35"/>`),
+
+w4b:()=>wrapN("0 0 200 120",
+ `<rect x="36" y="50" width="8" height="42" fill="#6B4A32"/>`
+ +`<rect x="156" y="50" width="8" height="42" fill="#6B4A32"/>`
+ +`<path d="M40 70 Q100 46 160 70" fill="none" stroke="#8A5A3B" stroke-width="5"/>`
+ +`<path d="M40 70 L40 92" fill="none" stroke-width="3.5"/>`
+ +`<path d="M160 70 L160 92" fill="none" stroke-width="3.5"/>`
+ +`<path d="M52 76 L52 66 M68 80 L68 68 M84 82 L84 70 M100 83 L100 71 M116 82 L116 70 M132 80 L132 68 M148 76 L148 66" fill="none" stroke="#8A5A3B" stroke-width="3"/>`
+ +`<path d="M40 92 Q100 106 160 92" fill="none" stroke="#6B7BA0" stroke-width="4"/>`),
+
+// w5 そらのせかい
+w5a:()=>wrapN("0 0 200 120",
+ `<path d="M84 44 Q84 14 114 14 Q144 14 144 44 Q144 64 114 74 Q84 64 84 44 Z" fill="#F272A8"/>`
+ +`<path d="M84 44 Q94 54 114 56 Q134 54 144 44" fill="none" stroke-width="3"/>`
+ +`<path d="M100 74 L104 92 M128 74 L124 92" fill="none" stroke-width="3"/>`
+ +`<rect x="100" y="92" width="28" height="16" rx="4" fill="#FFC53D"/>`
+ +`<path d="M40 100 Q40 84 56 84 Q72 84 72 100 Q72 112 56 116 Q40 112 40 100 Z" fill="#5FA8F0"/>`
+ +`<rect x="50" y="116" width="12" height="9" rx="2" fill="#FFC53D"/>`
+ +`<path d="M148 96 Q148 82 162 82 Q176 82 176 96 Q176 106 162 110 Q148 106 148 96 Z" fill="#9B59D0"/>`
+ +`<rect x="156" y="110" width="12" height="8" rx="2" fill="#FFC53D"/>`),
+
+w5b:()=>wrapN("0 0 200 120",
+ `<path d="M20 60 Q28 54 36 60" fill="none" stroke-width="3.5"/>`
+ +`<path d="M32 66 Q40 60 48 66" fill="none" stroke-width="3.5"/>`
+ +`<path d="M60 48 Q68 42 76 48" fill="none" stroke-width="3.5"/>`
+ +`<path d="M72 54 Q80 48 88 54" fill="none" stroke-width="3.5"/>`
+ +`<path d="M110 66 Q118 60 126 66" fill="none" stroke-width="3.5"/>`
+ +`<path d="M122 72 Q130 66 138 72" fill="none" stroke-width="3.5"/>`
+ +`<path d="M150 50 Q158 44 166 50" fill="none" stroke-width="3.5"/>`
+ +`<path d="M162 56 Q170 50 178 56" fill="none" stroke-width="3.5"/>`),
+
+// w6 よるのせかい
+w6a:()=>wrapN("0 0 200 120",
+ `<path d="M124 14 C104 14 90 28 90 46 C90 64 104 78 124 78 C114 71 108 60 108 46 C108 32 114 21 124 14 Z" fill="#FFE29B"/>`
+ +spark(50,26,0.7,"#fff")+spark(66,44,0.55,"#FFE9B8")
+ +spark(150,30,0.6,"#fff")+spark(168,52,0.5,"#FFE9B8")
+ +spark(30,60,0.5,"#fff")+spark(178,20,0.55,"#fff")),
+
+w6b:()=>wrapN("0 0 200 120",
+ `<rect x="30" y="90" width="36" height="28" fill="#1F3A63"/>`
+ +`<path d="M24 90 L48 68 L72 90 Z" fill="#16294A"/>`
+ +`<rect x="44" y="98" width="8" height="9" fill="#FFE29B" opacity=".8"/>`
+ +`<rect x="120" y="82" width="32" height="36" fill="#1F3A63"/>`
+ +`<path d="M114 82 L136 60 L158 82 Z" fill="#16294A"/>`
+ +`<rect x="132" y="94" width="7" height="8" fill="#FFE29B" opacity=".8"/>`
+ +`<path d="M100 118 Q110 108 120 118" fill="none" stroke-width="3" stroke="#16294A"/>`),
+
+// w7 ゆきのせかい
+w7a:()=>wrapN("0 0 200 120",
+ `<circle cx="66" cy="98" r="20" fill="#EAF6FF"/>`
+ +`<circle cx="66" cy="66" r="14" fill="#EAF6FF"/>`
+ +`<path d="M66 60 L58 50 M66 60 L74 50 M66 60 L66 48" fill="none" stroke="#7FA8C9" stroke-width="3"/>`
+ +`<circle cx="61" cy="64" r="1.8" fill="#33302E" stroke="none"/><circle cx="71" cy="64" r="1.8" fill="#33302E" stroke="none"/>`
+ +`<path d="M63 70 L69 70 L66 74 Z" fill="#FF9D4D"/>`
+ +`<circle cx="60" cy="94" r="2" fill="#33302E" stroke="none"/><circle cx="72" cy="94" r="2" fill="#33302E" stroke="none"/><circle cx="66" cy="102" r="2" fill="#33302E" stroke="none"/>`
+ +`<ellipse cx="66" cy="120" rx="30" ry="5" fill="#BEE3F8" opacity=".5"/>`),
+
+w7b:()=>wrapN("0 0 200 120",
+ `<path d="M130 118 L138 84 L146 118 Z" fill="#2F6B4A"/>`
+ +`<path d="M124 92 L138 62 L152 92 Z" fill="#2F6B4A"/>`
+ +`<path d="M128 68 L138 46 L148 68 Z" fill="#3E9B5C"/>`
+ +`<path d="M164 118 L170 92 L176 118 Z" fill="#2F6B4A"/>`
+ +`<path d="M160 96 L170 74 L180 96 Z" fill="#3E9B5C"/>`
+ +`<circle cx="136" cy="88" r="2.5" fill="#EAF6FF" stroke="none"/><circle cx="146" cy="100" r="2.5" fill="#EAF6FF" stroke="none"/>`
+ +`<circle cx="168" cy="90" r="2.2" fill="#EAF6FF" stroke="none"/>`
+ +`<ellipse cx="150" cy="118" rx="40" ry="4" fill="#BEE3F8" opacity=".5"/>`),
+
+};
+const DECOB = {
+w8a: () => wrapN("0 0 200 120",
+ `<path d="M-4 108 Q60 88 100 96 Q140 88 204 108 L204 124 L-4 124 Z" fill="#8FD8B0"/>`
+ + `<path d="M10 100 Q100 4 190 100 L190 88 Q100 -8 10 88 Z" fill="#FF5A3C"/>`
+ + `<path d="M20 92 Q100 12 180 92 L180 80 Q100 0 20 80 Z" fill="#FFC53D"/>`
+ + `<path d="M30 84 Q100 20 170 84 L170 72 Q100 8 30 72 Z" fill="#4CB944"/>`
+ + `<path d="M40 76 Q100 28 160 76 L160 64 Q100 16 40 64 Z" fill="#5FA8F0"/>`
+ + `<path d="M50 68 Q100 36 150 68 L150 56 Q100 24 50 56 Z" fill="#9B59D0"/>`
+ + `<ellipse cx="34" cy="30" rx="20" ry="10" fill="#FFFDF6" stroke="none"/><ellipse cx="48" cy="24" rx="14" ry="9" fill="#FFFDF6" stroke="none"/>`
+ + `<ellipse cx="168" cy="40" rx="18" ry="9" fill="#FFFDF6" stroke="none"/>`
+ + spark(178, 18, .8, "#FFC53D") + spark(14, 60, .6, "#F272A8") + spark(100, 10, .7, "#5FA8F0")),
+w8b: () => wrapN("0 0 200 120",
+ `<path d="M-4 112 Q100 100 204 112 L204 124 L-4 124 Z" fill="#B5E098" stroke="none"/>`
+ + `<g transform="translate(46 44)"><path d="M0 0 Q-22 -18 -16 4 Q-14 20 0 8 Z" fill="#F272A8"/><path d="M0 0 Q22 -18 16 4 Q14 20 0 8 Z" fill="#FFC53D"/><line x1="0" y1="-2" x2="0" y2="12"/></g>`
+ + `<g transform="translate(104 30) scale(1.15)"><path d="M0 0 Q-22 -18 -16 4 Q-14 20 0 8 Z" fill="#5FA8F0"/><path d="M0 0 Q22 -18 16 4 Q14 20 0 8 Z" fill="#9B59D0"/><line x1="0" y1="-2" x2="0" y2="12"/></g>`
+ + `<g transform="translate(156 58) scale(.85)"><path d="M0 0 Q-22 -18 -16 4 Q-14 20 0 8 Z" fill="#FF5A3C"/><path d="M0 0 Q22 -18 16 4 Q14 20 0 8 Z" fill="#4CB944"/><line x1="0" y1="-2" x2="0" y2="12"/></g>`
+ + `<g transform="translate(24 74) scale(.7)"><path d="M0 0 Q-22 -18 -16 4 Q-14 20 0 8 Z" fill="#FFC53D"/><path d="M0 0 Q22 -18 16 4 Q14 20 0 8 Z" fill="#F272A8"/><line x1="0" y1="-2" x2="0" y2="12"/></g>`
+ + `<circle cx="66" cy="90" r="3" fill="#4CB944" stroke="none"/><circle cx="140" cy="94" r="3" fill="#4CB944" stroke="none"/>`
+ + spark(180, 20, .6, "#FFC53D") + spark(10, 20, .5, "#F272A8")),
+w9a: () => wrapN("0 0 200 120",
+ `<path d="M-4 100 Q100 84 204 100 L204 124 L-4 124 Z" fill="#4A4478" stroke="none"/>`
+ + `<circle cx="40" cy="30" r="3.4" fill="#FFD95C" stroke="none"/>`
+ + `<circle cx="78" cy="18" r="3.8" fill="#FFD95C" stroke="none"/>`
+ + `<circle cx="120" cy="26" r="3.2" fill="#FFD95C" stroke="none"/>`
+ + `<circle cx="150" cy="46" r="3.6" fill="#FFD95C" stroke="none"/>`
+ + `<circle cx="98" cy="52" r="3" fill="#FFD95C" stroke="none"/>`
+ + `<path d="M40 30 L78 18 L120 26 L150 46 M78 18 L98 52" fill="none" stroke="#FFE9A8" stroke-width="3" stroke-dasharray="2 7" opacity=".8"/>`
+ + `<circle cx="20" cy="60" r="1.6" fill="#fff" stroke="none"/><circle cx="176" cy="18" r="1.6" fill="#fff" stroke="none"/><circle cx="60" cy="76" r="1.4" fill="#fff" stroke="none"/><circle cx="184" cy="70" r="1.6" fill="#fff" stroke="none"/>`
+ + spark(24, 22, .6, "#FFE9A8") + spark(168, 82, .7, "#FFD95C")),
+w9b: () => wrapN("0 0 200 120",
+ `<path d="M-4 104 Q100 90 204 104 L204 124 L-4 124 Z" fill="#4A4478" stroke="none"/>`
+ + `<path d="M28 22 L84 46" fill="none" stroke="#FFF6E0" stroke-width="3.5" stroke-linecap="round"/>`
+ + spark(84, 46, 1.1, "#FFE9A8")
+ + `<path d="M140 8 L176 26" fill="none" stroke="#FFF6E0" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>`
+ + spark(176, 26, .8, "#FFC53D")
+ + `<path d="M100 62 L128 78" fill="none" stroke="#FFF6E0" stroke-width="3" stroke-linecap="round" opacity=".8"/>`
+ + spark(128, 78, .6, "#F272A8")
+ + `<circle cx="16" cy="50" r="1.6" fill="#fff" stroke="none"/><circle cx="60" cy="12" r="1.4" fill="#fff" stroke="none"/><circle cx="190" cy="60" r="1.6" fill="#fff" stroke="none"/><circle cx="150" cy="94" r="1.4" fill="#fff" stroke="none"/>`),
+w10a: () => wrapN("0 0 200 120",
+ `<path d="M-4 106 Q100 92 204 106 L204 124 L-4 124 Z" fill="#7FCB72" stroke="none"/>`
+ + `<path d="M52 40 L52 96" fill="none"/>`
+ + `<path d="M52 40 L84 40" fill="none"/>`
+ + `<line x1="58" y1="46" x2="78" y2="46"/><line x1="58" y1="56" x2="78" y2="56"/><line x1="58" y1="66" x2="78" y2="66"/>`
+ + `<path d="M84 40 Q136 44 148 92 L128 96 Q118 56 84 52 Z" fill="#FFC53D"/>`
+ + `<path d="M52 96 L100 96" fill="none"/>`
+ + `<circle cx="168" cy="34" r="16" fill="#3E8DE3" opacity=".18" stroke="none"/>`
+ + `<ellipse cx="26" cy="98" rx="14" ry="6" fill="#4CB944" stroke="none"/>`),
+w10b: () => wrapN("0 0 200 120",
+ `<path d="M-4 108 Q100 94 204 108 L204 124 L-4 124 Z" fill="#7FCB72" stroke="none"/>`
+ + `<path d="M138 30 L138 70" fill="none" stroke-width="3.5"/>`
+ + `<ellipse cx="138" cy="24" rx="30" ry="24" fill="#4CB944"/>`
+ + `<ellipse cx="118" cy="34" rx="10" ry="7" fill="#67C15A" stroke="none"/>`
+ + `<rect x="34" y="78" width="60" height="6" rx="3" fill="#B5804C"/>`
+ + `<line x1="40" y1="84" x2="40" y2="98"/><line x1="88" y1="84" x2="88" y2="98"/>`
+ + `<line x1="34" y1="70" x2="94" y2="70"/><line x1="42" y1="70" x2="42" y2="78"/><line x1="86" y1="70" x2="86" y2="78"/>`
+ + `<circle cx="20" cy="100" r="3" fill="#F272A8" stroke="none"/><circle cx="108" cy="102" r="3" fill="#FFC53D" stroke="none"/>`),
+w11a: () => wrapN("0 0 200 120",
+ `<path d="M-4 96 Q100 78 204 96 L204 124 L-4 124 Z" fill="#B5E098" stroke="none"/>`
+ + `<circle cx="30" cy="98" r="8" fill="#F272A8"/><circle cx="30" cy="98" r="3" fill="#FFE9A8" stroke="none"/>`
+ + `<circle cx="64" cy="86" r="7" fill="#FFC53D"/><circle cx="64" cy="86" r="2.6" fill="#FFF6E0" stroke="none"/>`
+ + `<circle cx="98" cy="100" r="8.5" fill="#5FA8F0"/><circle cx="98" cy="100" r="3" fill="#FFE9A8" stroke="none"/>`
+ + `<circle cx="134" cy="88" r="7" fill="#F272A8"/><circle cx="134" cy="88" r="2.6" fill="#FFF6E0" stroke="none"/>`
+ + `<circle cx="168" cy="98" r="8" fill="#9B59D0"/><circle cx="168" cy="98" r="3" fill="#FFE9A8" stroke="none"/>`
+ + `<path d="M30 106 L30 116 M64 94 L64 108 M98 108 L98 118 M134 96 L134 108 M168 106 L168 116" fill="none" stroke-width="3"/>`
+ + spark(46, 70, .5, "#FFF6E0") + spark(148, 66, .5, "#FFF6E0")),
+w11b: () => wrapN("0 0 200 120",
+ `<path d="M-4 108 Q100 96 204 108 L204 124 L-4 124 Z" fill="#B5E098" stroke="none"/>`
+ + `<circle cx="24" cy="100" r="6" fill="#F272A8"/><circle cx="60" cy="106" r="5.5" fill="#FFC53D"/><circle cx="150" cy="104" r="6" fill="#5FA8F0"/><circle cx="182" cy="98" r="5.5" fill="#9B59D0"/>`
+ + `<g transform="translate(66 40)"><ellipse cx="-6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="0" cy="2" rx="6" ry="5" fill="#FFC53D"/><path d="M-4 -1 L-1 -4 M4 -1 L1 -4" stroke-width="3"/></g>`
+ + `<g transform="translate(120 62) scale(1.2)"><ellipse cx="-6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="0" cy="2" rx="6" ry="5" fill="#FFC53D"/><path d="M-4 -1 L-1 -4 M4 -1 L1 -4" stroke-width="3"/></g>`
+ + `<g transform="translate(150 26) scale(.8)"><ellipse cx="-6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="6" cy="-2" rx="8" ry="6" fill="#FFF6E0" opacity=".85"/><ellipse cx="0" cy="2" rx="6" ry="5" fill="#FFC53D"/><path d="M-4 -1 L-1 -4 M4 -1 L1 -4" stroke-width="3"/></g>`
+ + spark(94, 20, .5, "#FFF6E0")),
+w12a: () => wrapN("0 0 200 120",
+ `<path d="M-4 106 Q100 94 204 106 L204 124 L-4 124 Z" fill="#9C7566" stroke="none"/>`
+ + `<line x1="4" y1="18" x2="196" y2="26" stroke-width="3"/>`
+ + `<g transform="translate(30 34)"><ellipse cx="0" cy="0" rx="13" ry="16" fill="#FF5A3C"/><line x1="0" y1="-16" x2="0" y2="16"/><circle cx="0" cy="-16" r="2" fill="${OUT}" stroke="none"/></g>`
+ + `<g transform="translate(76 42) scale(1.1)"><ellipse cx="0" cy="0" rx="13" ry="16" fill="#FFC53D"/><line x1="0" y1="-16" x2="0" y2="16"/><circle cx="0" cy="-16" r="2" fill="${OUT}" stroke="none"/></g>`
+ + `<g transform="translate(124 34) scale(.9)"><ellipse cx="0" cy="0" rx="13" ry="16" fill="#F272A8"/><line x1="0" y1="-16" x2="0" y2="16"/><circle cx="0" cy="-16" r="2" fill="${OUT}" stroke="none"/></g>`
+ + `<g transform="translate(168 44)"><ellipse cx="0" cy="0" rx="13" ry="16" fill="#5FA8F0"/><line x1="0" y1="-16" x2="0" y2="16"/><circle cx="0" cy="-16" r="2" fill="${OUT}" stroke="none"/></g>`
+ + spark(50, 14, .5, "#FFE9A8") + spark(148, 16, .5, "#FFE9A8")),
+w12b: () => wrapN("0 0 200 120",
+ `<path d="M-4 108 Q100 96 204 108 L204 124 L-4 124 Z" fill="#9C7566" stroke="none"/>`
+ + `<path d="M30 60 L170 60 L158 40 L42 40 Z" fill="#FF5A3C"/>`
+ + `<rect x="38" y="60" width="124" height="34" rx="4" fill="#FFF6E0"/>`
+ + `<rect x="38" y="60" width="124" height="10" fill="#3E8DE3" stroke="none"/>`
+ + `<line x1="60" y1="40" x2="60" y2="10"/><line x1="140" y1="40" x2="140" y2="10"/>`
+ + `<path d="M56 10 L64 10 L60 2 Z" fill="#FFC53D"/><path d="M136 10 L144 10 L140 2 Z" fill="#F272A8"/>`
+ + `<rect x="70" y="70" width="60" height="10" rx="3" fill="#FFC53D" stroke="none"/>`
+ + spark(20, 30, .5, "#FFE9A8")),
+w13a: () => wrapN("0 0 200 120",
+ `<circle cx="50" cy="46" r="26" fill="#9D8CFF"/>`
+ + `<path d="M26 40 Q50 30 74 40" fill="none" stroke="#7B6BE0" stroke-width="3"/>`
+ + `<circle cx="40" cy="38" r="4" fill="#7B6BE0" stroke="none"/><circle cx="60" cy="54" r="3" fill="#7B6BE0" stroke="none"/>`
+ + `<circle cx="146" cy="74" r="20" fill="#FF9D3D"/>`
+ + `<ellipse cx="146" cy="74" rx="34" ry="8" fill="none" stroke="#FFD9A0" stroke-width="3.5"/>`
+ + `<circle cx="138" cy="68" r="3" fill="#E8801E" stroke="none"/><circle cx="154" cy="80" r="2.4" fill="#E8801E" stroke="none"/>`
+ + `<circle cx="20" cy="90" r="6" fill="#5FA8F0" stroke="none"/>`
+ + `<circle cx="188" cy="24" r="1.8" fill="#fff" stroke="none"/><circle cx="100" cy="16" r="1.6" fill="#fff" stroke="none"/><circle cx="18" cy="20" r="1.4" fill="#fff" stroke="none"/>`
+ + spark(96, 96, .6, "#FFD95C")),
+w13b: () => wrapN("0 0 200 120",
+ `<g transform="translate(150 56) rotate(28)">`
+ + `<path d="M-13 40 Q-18 54 0 60 Q18 54 13 40 Z" fill="#FFC53D"/>`
+ + `<path d="M-16 8 Q-30 16 -30 32 Q-18 32 -10 24 Z" fill="#FF5A3C"/>`
+ + `<path d="M16 8 Q30 16 30 32 Q18 32 10 24 Z" fill="#FF5A3C"/>`
+ + `<rect x="-16" y="-24" width="32" height="56" rx="15" fill="#F7F3E8"/>`
+ + `<path d="M-16 -14 Q-14 -38 0 -46 Q14 -38 16 -14 Z" fill="#FF5A3C"/>`
+ + `<circle cx="0" cy="4" r="11" fill="#5FA8F0"/>`
+ + `</g>`
+ + `<circle cx="30" cy="24" r="1.8" fill="#fff" stroke="none"/><circle cx="60" cy="60" r="1.6" fill="#fff" stroke="none"/><circle cx="20" cy="80" r="1.6" fill="#fff" stroke="none"/><circle cx="90" cy="20" r="1.4" fill="#fff" stroke="none"/>`
+ + `<circle cx="46" cy="46" r="10" fill="#4A4478" stroke="none"/>`
+ + spark(70, 90, .6, "#FFD95C")),
+w14a: () => wrapN("0 0 200 120",
+ `<path d="M-4 108 Q100 96 204 108 L204 124 L-4 124 Z" fill="#F5B8C9" stroke="none"/>`
+ + `<rect x="60" y="60" width="80" height="46" rx="6" fill="#F7C9A0"/>`
+ + `<path d="M52 60 L100 24 L148 60 Z" fill="#FF5A3C"/>`
+ + `<circle cx="70" cy="46" r="4" fill="#F272A8" stroke="none"/><circle cx="90" cy="38" r="4" fill="#FFC53D" stroke="none"/><circle cx="112" cy="44" r="4" fill="#5FA8F0" stroke="none"/><circle cx="130" cy="52" r="4" fill="#4CB944" stroke="none"/>`
+ + `<rect x="88" y="78" width="24" height="28" rx="4" fill="#8A5A3C"/>`
+ + `<circle cx="100" cy="90" r="3" fill="#FFE9A8" stroke="none"/>`
+ + `<path d="M56 106 L56 90 M144 106 L144 92" fill="none" stroke="#F272A8" stroke-width="3.5" stroke-linecap="round"/>`),
+w14b: () => wrapN("0 0 200 120",
+ `<path d="M-4 110 Q100 98 204 110 L204 124 L-4 124 Z" fill="#F5B8C9" stroke="none"/>`
+ + `<path d="M100 106 L100 60" fill="none" stroke="#D9A05C" stroke-width="3.5"/>`
+ + `<circle cx="100" cy="38" r="30" fill="#F272A8"/>`
+ + `<circle cx="88" cy="28" r="6" fill="#FFD3E8" stroke="none"/>`
+ + `<circle cx="70" cy="30" r="9" fill="#FFC53D" stroke="none"/><circle cx="130" cy="30" r="9" fill="#5FA8F0" stroke="none"/>`
+ + `<circle cx="62" cy="52" r="7" fill="#4CB944" stroke="none"/><circle cx="138" cy="52" r="7" fill="#9B59D0" stroke="none"/>`
+ + `<circle cx="100" cy="12" r="6" fill="#FFE9A8" stroke="none"/>`
+ + spark(30, 60, .5, "#FFF6E0") + spark(168, 66, .5, "#FFF6E0")),
+natsumatsuri_a: () => wrapN("0 0 200 120",
+ `<path d="M56 42 L74 42 M56 42 L65 26 M56 42 L47 26 M56 42 L38 42 M56 42 L47 58 M56 42 L65 58" fill="none" stroke="#FF5A3C" stroke-width="3.2"/>`
+ + `<circle cx="56" cy="42" r="3.4" fill="#FFF6E0" stroke="none"/>`
+ + spark(74, 42, .45, "#FFD23F") + spark(47, 26, .4, "#FFD23F")
+ + `<path d="M126 26 L146 26 M126 26 L140 12 M126 26 L126 6 M126 26 L112 12 M126 26 L106 26 M126 26 L112 40 M126 26 L126 46 M126 26 L140 40" fill="none" stroke="#FFC53D" stroke-width="3.2"/>`
+ + `<circle cx="126" cy="26" r="3.6" fill="#FFF6E0" stroke="none"/>`
+ + spark(126, 6, .45, "#FFF6E0") + spark(146, 26, .4, "#FF5A3C")
+ + `<path d="M168 64 L180 64 M168 64 L174 54 M168 64 L162 54 M168 64 L156 64 M168 64 L162 74 M168 64 L174 74" fill="none" stroke="#F272A8" stroke-width="3"/>`
+ + `<circle cx="168" cy="64" r="2.8" fill="#FFF6E0" stroke="none"/>`
+ + `<circle cx="16" cy="20" r="1.6" fill="#fff" stroke="none"/><circle cx="190" cy="90" r="1.4" fill="#fff" stroke="none"/>`),
+natsumatsuri_b: () => wrapN("0 0 200 120",
+ `<line x1="10" y1="16" x2="190" y2="16" stroke-width="3.5"/>`
+ + `<path d="M44 16 L44 34 M44 52 L44 60" fill="none" stroke-width="3"/>`
+ + `<circle cx="44" cy="42" r="10" fill="#5FA8F0"/>`
+ + `<rect x="40" y="60" width="8" height="22" rx="1" fill="#FFF6E0"/>`
+ + `<circle cx="44" cy="62" r="2.6" fill="${OUT}" stroke="none"/>`
+ + `<path d="M104 16 L104 32 M104 52 L104 60" fill="none" stroke-width="3"/>`
+ + `<circle cx="104" cy="42" r="11" fill="#F272A8"/>`
+ + `<rect x="100" y="60" width="8" height="24" rx="1" fill="#FFF6E0"/>`
+ + `<circle cx="104" cy="62" r="2.6" fill="${OUT}" stroke="none"/>`
+ + `<path d="M156 16 L156 30 M156 48 L156 55" fill="none" stroke-width="3"/>`
+ + `<circle cx="156" cy="38" r="9" fill="#FFC53D"/>`
+ + `<rect x="152" y="55" width="7" height="20" rx="1" fill="#FFF6E0"/>`
+ + `<circle cx="156" cy="57" r="2.4" fill="${OUT}" stroke="none"/>`
+ + `<path d="M20 16 Q26 8 34 16" fill="none" stroke-width="3"/>`
+ + spark(180, 26, .4, "#4CB944")),
+halloween_a: () => wrapN("0 0 200 120",
+ shd(40, 104, 16) + shd(100, 100, 22) + shd(158, 104, 14)
+ + `<ellipse cx="40" cy="90" rx="18" ry="15" fill="#FF5A3C"/>`
+ + `<path d="M28 78 Q28 90 28 102 M40 76 Q40 90 40 104 M52 78 Q52 90 52 102" fill="none" stroke-width="3"/>`
+ + `<path d="M36 76 L34 66 L44 66 L42 76 Z" fill="#4CB944"/>`
+ + `<path d="M32 84 L38 90 L32 94 Z M48 84 L42 90 L48 94 Z M32 98 Q40 104 48 98" fill="#8A3A1E"/>`
+ + `<ellipse cx="100" cy="82" rx="24" ry="20" fill="#FF7A3C"/>`
+ + `<path d="M84 66 Q84 82 84 98 M100 62 Q100 82 100 100 M116 66 Q116 82 116 98" fill="none" stroke-width="3"/>`
+ + `<path d="M94 62 L91 48 L104 48 L101 62 Z" fill="#4CB944"/>`
+ + `<path d="M88 76 L96 82 L88 88 Z M112 76 L104 82 L112 88 Z M86 94 Q100 104 114 94" fill="#8A3A1E"/>`
+ + `<ellipse cx="158" cy="92" rx="16" ry="13" fill="#F5A623"/>`
+ + `<path d="M148 82 Q148 92 148 102 M158 80 Q158 92 158 104 M168 82 Q168 92 168 102" fill="none" stroke-width="3"/>`
+ + `<path d="M154 80 L152 70 L162 70 L160 80 Z" fill="#4CB944"/>`
+ + `<path d="M150 88 L156 92 L150 96 Z M166 88 L160 92 L166 96 Z M150 100 Q158 105 166 100" fill="#8A3A1E"/>`
+ + `<path d="M170 18 Q152 24 152 40 Q152 56 170 62 Q160 48 160 40 Q160 32 170 18 Z" fill="#FFE28A"/>`
+ + `<path d="M40 26 Q30 18 18 24 Q28 26 34 32 L40 30 L46 32 Q52 26 62 24 Q50 18 40 26 Z" fill="#2A1F3A" stroke="none"/>`
+ + `<circle cx="20" cy="18" r="1.6" fill="#fff" stroke="none"/><circle cx="120" cy="16" r="1.4" fill="#fff" stroke="none"/>`),
+halloween_b: () => wrapN("0 0 200 120",
+ `<path d="M28 54 Q28 34 44 34 Q60 34 60 54 L60 66 Q54 60 49 66 Q44 60 39 66 Q34 60 28 66 Z" fill="#FFFFFF"/>`
+ + `<circle cx="38" cy="48" r="2.4" fill="${OUT}" stroke="none"/><circle cx="50" cy="48" r="2.4" fill="${OUT}" stroke="none"/>`
+ + `<path d="M41 58 Q44 61 47 58" fill="none" stroke-width="3"/>`
+ + `<path d="M86 42 Q86 20 104 20 Q122 20 122 42 L122 56 Q116 49 111 56 Q104 49 97 56 Q92 49 86 56 Z" fill="#FFFFFF"/>`
+ + `<circle cx="98" cy="36" r="2.6" fill="${OUT}" stroke="none"/><circle cx="112" cy="36" r="2.6" fill="${OUT}" stroke="none"/>`
+ + `<path d="M99 46 Q104 50 109 46" fill="none" stroke-width="3"/>`
+ + `<path d="M148 64 Q148 48 160 48 Q172 48 172 64 L172 74 Q168 69 164 74 Q160 69 156 74 Q152 69 148 74 Z" fill="#FFFFFF" opacity=".9"/>`
+ + `<circle cx="155" cy="60" r="2" fill="${OUT}" stroke="none"/><circle cx="165" cy="60" r="2" fill="${OUT}" stroke="none"/>`
+ + `<path d="M156 68 Q160 71 164 68" fill="none" stroke-width="3"/>`
+ + `<path d="M20 118 L20 78 M20 84 L8 70 M20 82 L32 68 M20 92 L10 84" fill="none" stroke="#2A1F3A" stroke-width="3.5"/>`
+ + `<path d="M180 24 Q172 18 164 22 Q170 24 174 28 L180 26 L186 28 Q190 24 196 22 Q188 18 180 24 Z" fill="#2A1F3A" stroke="none"/>`
+ + `<circle cx="70" cy="14" r="1.6" fill="#fff" stroke="none"/><circle cx="140" cy="18" r="1.4" fill="#fff" stroke="none"/>`),
+christmas_a: () => wrapN("0 0 200 120",
+ shd(100, 108, 40)
+ + `<path d="M56 100 L100 66 L144 100 Z" fill="#2F9E4F"/>`
+ + `<path d="M64 74 L100 40 L136 74 Z" fill="#3AAE5C"/>`
+ + `<path d="M72 50 L100 20 L128 50 Z" fill="#48BE6A"/>`
+ + `<rect x="92" y="100" width="16" height="12" rx="2" fill="#8A5A3C"/>`
+ + spark(100, 16, 1, "#FFD23F")
+ + `<circle cx="84" cy="88" r="4" fill="#F272A8" stroke="none"/><circle cx="116" cy="90" r="4" fill="#5FA8F0" stroke="none"/><circle cx="100" cy="60" r="3.5" fill="#FFC53D" stroke="none"/><circle cx="88" cy="62" r="3.5" fill="#F272A8" stroke="none"/><circle cx="100" cy="34" r="3" fill="#5FA8F0" stroke="none"/>`
+ + `<rect x="150" y="86" width="24" height="20" rx="3" fill="#F272A8"/>`
+ + `<path d="M150 94 L174 94 M162 86 L162 106" fill="none" stroke="#FFF6E0" stroke-width="3"/>`),
+christmas_b: () => wrapN("0 0 200 120",
+ `<line x1="10" y1="18" x2="190" y2="18" stroke-width="3.5"/>`
+ + `<path d="M30 24 L30 58 Q30 68 40 68 L54 68 Q60 68 60 60 L52 50 L48 50 L48 24 Z" fill="#FF5A3C"/>`
+ + `<rect x="28" y="18" width="22" height="10" rx="4" fill="#FFFFFF"/>`
+ + `<path d="M39 18 Q39 12 45 12 Q45 16 41 18" fill="none" stroke-width="3"/>`
+ + `<circle cx="42" cy="40" r="2.6" fill="#FFF6E0" stroke="none"/>`
+ + `<path d="M88 24 L88 60 Q88 70 98 70 L114 70 Q120 70 120 62 L112 52 L108 52 L108 24 Z" fill="#4CB944"/>`
+ + `<rect x="86" y="18" width="24" height="11" rx="4" fill="#FFFFFF"/>`
+ + `<path d="M99 18 Q99 12 105 12 Q105 16 101 18" fill="none" stroke-width="3"/>`
+ + `<circle cx="102" cy="42" r="2.8" fill="#FFF6E0" stroke="none"/>`
+ + `<path d="M150 24 L150 54 Q150 62 158 62 L170 62 Q175 62 175 55 L168 48 L165 48 L165 24 Z" fill="#F272A8"/>`
+ + `<rect x="148" y="18" width="20" height="9" rx="4" fill="#FFFFFF"/>`
+ + `<path d="M158 18 Q158 13 163 13 Q163 16 160 18" fill="none" stroke-width="3"/>`
+ + `<circle cx="160" cy="38" r="2.4" fill="#FFF6E0" stroke="none"/>`
+ + `<path d="M20 14 Q14 10 12 16 Q18 16 20 20 Q22 16 28 16 Q26 10 20 14 Z" fill="#4CB944"/><circle cx="20" cy="18" r="2" fill="#E1432A" stroke="none"/>`),
+oshogatsu_a: () => wrapN("0 0 200 120",
+ shd(100, 110, 50)
+ + `<path d="M92 110 L92 30 L102 18 L102 110 Z" fill="#4CB944"/>`
+ + `<path d="M92 50 L102 50 M92 74 L102 74 M92 96 L102 96" fill="none" stroke-width="3"/>`
+ + `<path d="M76 110 L76 46 L86 34 L86 110 Z" fill="#5FCB5A"/>`
+ + `<path d="M76 62 L86 62 M76 84 L86 84 M76 104 L86 104" fill="none" stroke-width="3"/>`
+ + `<path d="M108 110 L108 58 L118 46 L118 110 Z" fill="#3E8F44"/>`
+ + `<path d="M108 72 L118 72 M108 92 L118 92" fill="none" stroke-width="3"/>`
+ + `<path d="M68 88 Q100 78 128 88" fill="none" stroke="#D9A05C" stroke-width="3.5"/>`
+ + `<path d="M60 92 L48 80 M60 96 L46 92 M60 100 L48 104" fill="none" stroke="#2F9E4F" stroke-width="3"/>`
+ + `<path d="M132 92 L144 80 M132 96 L146 92 M132 100 L144 104" fill="none" stroke="#2F9E4F" stroke-width="3"/>`
+ + `<path d="M92 30 L86 20 L98 22 Z" fill="#FFFFFF"/>`
+ + `<circle cx="100" cy="18" r="3" fill="#F272A8" stroke="none"/>`),
+oshogatsu_b: () => wrapN("0 0 200 120",
+ `<path d="M100 20 L130 50 L100 100 L70 50 Z" fill="#FF5A3C"/>`
+ + `<path d="M70 50 L130 50 M100 20 L100 100" fill="none" stroke-width="3"/>`
+ + `<circle cx="100" cy="40" r="4" fill="#FFC53D" stroke="none"/><circle cx="100" cy="80" r="4" fill="#5FA8F0" stroke="none"/>`
+ + `<path d="M100 100 Q96 106 102 112 Q97 117 103 120" fill="none" stroke="#FFC53D" stroke-width="3.5"/>`
+ + `<path d="M99 106 L94 110 L100 111 Z M101 114 L107 117 L100 119 Z" fill="#5FA8F0"/>`
+ + `<path d="M100 100 L60 118" fill="none" stroke-width="3" opacity=".7"/>`
+ + `<ellipse cx="40" cy="30" rx="16" ry="8" fill="#FFFFFF" opacity=".85" stroke="none"/><ellipse cx="160" cy="24" rx="14" ry="7" fill="#FFFFFF" opacity=".85" stroke="none"/>`
+ + spark(140, 70, .5, "#F272A8")),
+kodomonohi_a: () => wrapN("0 0 200 120",
+ `<path d="M20 10 L20 112" fill="none" stroke-width="3.5"/>`
+ + `<circle cx="20" cy="8" r="4" fill="#FFC53D"/>`
+ + `<circle cx="20" cy="18" r="6" fill="none" stroke-width="3"/>`
+ + `<path d="M26 30 Q60 12 120 16 L168 30 L120 44 Q60 48 26 30 Z" fill="#33302E"/>`
+ + `<circle cx="26" cy="30" r="9" fill="none" stroke-width="3"/>`
+ + `<circle cx="40" cy="24" r="3" fill="#FFFFFF"/><circle cx="41" cy="24" r="1.4" fill="${OUT}" stroke="none"/>`
+ + `<path d="M60 20 Q80 24 100 22 M60 38 Q80 34 100 36" fill="none" stroke-width="3" opacity=".6"/>`
+ + `<path d="M26 66 Q54 52 100 55 L140 66 L100 77 Q54 80 26 66 Z" fill="#FF5A3C"/>`
+ + `<circle cx="26" cy="66" r="7" fill="none" stroke-width="3"/>`
+ + `<circle cx="38" cy="61" r="2.4" fill="#FFFFFF"/><circle cx="39" cy="61" r="1.1" fill="${OUT}" stroke="none"/>`
+ + `<path d="M26 96 Q48 86 84 88 L114 96 L84 104 Q48 106 26 96 Z" fill="#5FA8F0"/>`
+ + `<circle cx="26" cy="96" r="6" fill="none" stroke-width="3"/>`
+ + `<circle cx="36" cy="92" r="2" fill="#FFFFFF"/><circle cx="37" cy="92" r="1" fill="${OUT}" stroke="none"/>`
+ + `<ellipse cx="170" cy="14" rx="14" ry="7" fill="#FFFFFF" opacity=".8" stroke="none"/>`),
+kodomonohi_b: () => wrapN("0 0 200 120",
+ `<ellipse cx="100" cy="90" rx="60" ry="14" fill="#FFFFFF"/>`
+ + `<path d="M60 60 Q50 78 60 96 Q80 106 100 96 Q90 78 100 60 Q80 50 60 60 Z" fill="#4CB944"/>`
+ + `<path d="M65 62 Q80 78 65 94" fill="none" stroke-width="3"/>`
+ + `<ellipse cx="80" cy="78" rx="8" ry="14" fill="#FFF6E0"/>`
+ + `<path d="M100 62 Q92 80 100 98 Q120 108 138 98 Q130 80 138 62 Q120 52 100 62 Z" fill="#5FCB5A"/>`
+ + `<path d="M105 64 Q120 80 106 96" fill="none" stroke-width="3"/>`
+ + `<ellipse cx="118" cy="80" rx="7" ry="13" fill="#FFF6E0"/>`
+ + `<path d="M30 70 Q22 60 14 66 Q20 72 18 80 Q28 78 30 70 Z" fill="#3E8F44"/>`
+ + `<circle cx="70" cy="98" r="2" fill="#8A5A3C" stroke="none"/><circle cx="112" cy="100" r="2" fill="#8A5A3C" stroke="none"/>`),
+hat_hachimaki: () => wrapN("0 0 160 90",
+ `<path d="M36 48 Q80 24 124 48 L124 40 Q80 16 36 40 Z" fill="#FBF6EA"/>`
+ + `<circle cx="70" cy="28" r="9" fill="#E1432A"/>`
+ + `<path d="M112 40 Q128 32 132 44 Q128 54 114 48 Z" fill="#FBF6EA"/>`
+ + `<path d="M118 44 L132 54 L126 60 L114 48 Z" fill="#FBF6EA"/>`
+ + `<path d="M110 46 L98 58 L106 60 L116 48 Z" fill="#FBF6EA"/>`
+ + `<path d="M46 42 Q80 26 114 42" fill="none" stroke-width="3"/>`
+ + `<path d="M120 50 L127 57 M108 50 L102 57" fill="none" stroke="#E1432A" stroke-width="3"/>`
+ + `<circle cx="50" cy="38" r="2.2" fill="#E1432A" stroke="none"/><circle cx="98" cy="38" r="2.2" fill="#E1432A" stroke="none"/>`),
+hat_obakehood: () => wrapN("0 0 160 90",
+ `<path d="M38 54 C38 22 56 8 80 8 C104 8 122 22 122 54 Q80 30 38 54 Z" fill="#FFFFFF"/>`
+ + `<path d="M40 46 Q48 58 56 46 Q64 58 72 46 Q80 58 88 46 Q96 58 104 46 Q112 58 120 46" fill="none" stroke-width="3"/>`
+ + `<ellipse cx="66" cy="32" rx="6" ry="8" fill="${OUT}"/><ellipse cx="94" cy="32" rx="6" ry="8" fill="${OUT}"/>`
+ + `<path d="M50 24 Q56 18 66 16 M110 24 Q104 18 94 16" fill="none" stroke-width="3"/>`
+ + spark(30, 20, .5, "#CDE8FF") + spark(128, 26, .45, "#CDE8FF")),
+hat_tonakai: () => wrapN("0 0 160 90",
+ `<path d="M44 46 Q80 30 116 46 L116 38 Q80 22 44 38 Z" fill="#8A5A3C"/>`
+ + `<path d="M52 40 Q46 20 36 8 Q40 22 34 26 Q44 20 42 32 Q50 24 52 40 Z" fill="#B5804C"/>`
+ + `<path d="M108 40 Q114 20 124 8 Q120 22 126 26 Q116 20 118 32 Q110 24 108 40 Z" fill="#B5804C"/>`
+ + `<circle cx="80" cy="38" r="5" fill="#E1432A"/>`
+ + `<circle cx="36" cy="10" r="3" fill="#FFC53D"/><circle cx="124" cy="10" r="3" fill="#FFC53D"/>`
+ + `<path d="M50 36 Q80 24 110 36" fill="none" stroke-width="3"/>`
+ + `<circle cx="60" cy="42" r="2" fill="#FFF6E0" stroke="none"/><circle cx="100" cy="42" r="2" fill="#FFF6E0" stroke="none"/>`),
+hat_kagami: () => wrapN("0 0 160 90",
+ `<ellipse cx="80" cy="46" rx="30" ry="14" fill="#FFFDF6"/>`
+ + `<ellipse cx="80" cy="28" rx="20" ry="10" fill="#FFFDF6"/>`
+ + `<circle cx="80" cy="17" r="8" fill="#FF9D3D"/>`
+ + `<path d="M80 9 Q75 4 70 8 Q76 8 80 9 Z" fill="#4CB944"/>`
+ + `<path d="M54 46 L48 60 L58 60 L52 46 Z M106 46 L112 60 L102 60 L108 46 Z" fill="#FFFFFF"/>`
+ + `<path d="M56 42 Q80 34 104 42" fill="none" stroke-width="3"/>`
+ + `<path d="M66 25 Q80 20 94 25" fill="none" stroke-width="3"/>`),
+hat_kabuto: () => wrapN("0 0 160 90",
+ `<path d="M40 50 C40 20 58 6 80 6 C102 6 120 20 120 50 Q80 28 40 50 Z" fill="#3E8DE3"/>`
+ + `<path d="M70 14 A10 10 0 1 0 70 34 A7 7 0 1 1 70 14 Z" fill="#FFC53D"/>`
+ + `<path d="M40 46 Q34 56 38 64 Q46 58 48 48 Z M120 46 Q126 56 122 64 Q114 58 112 48 Z" fill="#2D6FBE"/>`
+ + `<circle cx="56" cy="30" r="2.4" fill="#FFC53D" stroke="none"/><circle cx="104" cy="30" r="2.4" fill="#FFC53D" stroke="none"/>`
+ + `<path d="M44 46 Q80 26 116 46" fill="none" stroke-width="3"/>`
+ + `<path d="M48 24 Q40 10 30 8 Q36 20 40 28 Z M112 24 Q120 10 130 8 Q124 20 120 28 Z" fill="#FFC53D"/>`),
+};
+Object.assign(ARTB,{
+rintaroB:()=>wrapN("0 0 160 160",shd(80,153,44)
+ +`<g transform="rotate(-42 46 96)"><rect x="38" y="72" width="17" height="34" rx="8.5" fill="#FFC53D"/></g>`
+ +`<circle cx="30" cy="64" r="8" fill="#FFDDBF"/>`
+ +`<g transform="rotate(42 114 96)"><rect x="105" y="72" width="17" height="34" rx="8.5" fill="#FFC53D"/></g>`
+ +`<circle cx="130" cy="64" r="8" fill="#FFDDBF"/>`
+ +`<g transform="rotate(18 60 140)"><rect x="52" y="130" width="13" height="16" rx="6.5" fill="#FFDDBF"/></g>`
+ +`<rect x="92" y="130" width="13" height="16" rx="6.5" fill="#FFDDBF"/>`
+ +`<g transform="rotate(14 52 150)"><rect x="38" y="142" width="28" height="13" rx="6.5" fill="#3E8DE3"/><rect x="40" y="150" width="24" height="5" rx="2.5" fill="#fff" stroke-width="3.5"/></g>`
+ +`<rect x="88" y="144" width="28" height="13" rx="6.5" fill="#3E8DE3"/><rect x="90" y="152" width="24" height="5" rx="2.5" fill="#fff" stroke-width="3.5"/>`
+ +`<rect x="52" y="118" width="56" height="20" rx="9" fill="#2E4A8F"/>`
+ +`<path d="M50 96 Q50 88 60 88 L100 88 Q110 88 110 96 L112 116 Q112 124 102 124 L58 124 Q48 124 48 116 Z" fill="#FFC53D"/>`
+ +`<circle cx="80" cy="58" r="46" fill="#3A3532"/>`
+ +`<circle cx="80" cy="64" r="40" fill="#FFDDBF"/>`
+ +`<path d="M41 62 Q38 22 80 20 Q122 22 119 62 Q110 50 102 58 Q96 44 84 52 Q76 42 66 52 Q58 46 52 60 Q46 54 41 62 Z" fill="#3A3532"/>`
+ +`<circle cx="94" cy="14" r="8" fill="#3A3532"/>`
+ +`<path d="M98 7 Q104 0 112 2" fill="none" stroke-width="4"/>`
+ +`<path d="M58 68 Q64 73 70 68" fill="none" stroke-width="4"/>`+`<path d="M90 68 Q96 73 102 68" fill="none" stroke-width="4"/>`
+ +`<path d="M67 80 Q80 98 93 80 Z" fill="#C0392B"/>`
+ +cheekB(47,79)+cheekB(113,79)
+ +spark(20,36,.8,"#FFC53D")+spark(142,30,.7,"#5FA8F0")),
+
+papaB:()=>wrapN("0 0 160 160",shd(80,153,42)
+ +`<g transform="rotate(26 121 74)"><ellipse cx="121" cy="74" rx="10" ry="19" fill="#4A3B2E"/></g>`
+ +`<g transform="rotate(40 48 116)"><rect x="40" y="102" width="15" height="28" rx="7.5" fill="#3E8DE3"/></g>`
+ +`<g transform="rotate(-38 116 112)"><rect x="108" y="98" width="15" height="30" rx="7.5" fill="#3E8DE3"/></g>`
+ +`<circle cx="126" cy="92" r="8.5" fill="#FFDDBF"/>`
+ +`<g transform="rotate(-24 131 80)"><rect x="127" y="72" width="8" height="14" rx="4" fill="#FFDDBF" stroke-width="3.5"/></g>`
+ +`<rect x="58" y="132" width="15" height="16" rx="7" fill="#D9B98C"/>`
+ +`<rect x="87" y="132" width="15" height="16" rx="7" fill="#D9B98C"/>`
+ +`<rect x="52" y="144" width="26" height="11" rx="5.5" fill="#8A5A3B"/>`
+ +`<rect x="84" y="144" width="26" height="11" rx="5.5" fill="#8A5A3B"/>`
+ +`<rect x="52" y="120" width="56" height="18" rx="8" fill="#D9B98C"/>`
+ +`<path d="M52 96 Q52 88 62 88 L98 88 Q108 88 108 96 L110 116 Q110 124 100 124 L60 124 Q50 124 50 116 Z" fill="#3E8DE3"/>`
+ +`<path d="M70 88 L80 96 L90 88" fill="none" stroke-width="3.5"/>`
+ +`<circle cx="80" cy="62" r="38" fill="#FFDDBF"/>`
+ +`<path d="M44 60 Q42 24 80 24 Q118 24 116 60 Q112 40 96 42 Q88 34 74 40 Q56 40 52 52 Q46 52 44 60 Z" fill="#4A3B2E"/>`
+ +`<path d="M48 74 Q50 100 80 102 Q110 100 112 74 Q108 92 92 92 Q86 88 80 88 Q74 88 68 92 Q52 92 48 74 Z" fill="#4A3B2E"/>`
+ +`<path d="M73 92 Q80 98 87 92" fill="none" stroke-width="3.5"/>`
+ +`<circle cx="63" cy="68" r="13" fill="#fff" fill-opacity=".55" stroke-width="4.5"/>`
+ +`<circle cx="97" cy="68" r="13" fill="#fff" fill-opacity=".55" stroke-width="4.5"/>`
+ +`<path d="M76 68 L84 68" fill="none" stroke-width="4.5"/>`
+ +`<path d="M57 69 Q63 74 69 69" fill="none" stroke-width="4"/>`
+ +`<path d="M91 69 Q97 74 103 69" fill="none" stroke-width="4"/>`
+ +`<path d="M55 51 Q63 48 70 51 M90 51 Q97 48 105 51" fill="none" stroke-width="3.5"/>`
+ +cheekB(48,80,.9)+cheekB(112,80,.9)),
+
+mamaB:()=>`<svg viewBox="0 0 160 160"><g stroke="#33302E" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="80" cy="150" rx="44" ry="6" fill="#33302E" opacity=".1" stroke="none"/><rect x="46" y="116" width="68" height="36" rx="15" fill="#F272A8"/><circle cx="80" cy="76" r="46" fill="#6B4A3A"/><ellipse cx="44" cy="96" rx="12" ry="24" fill="#6B4A3A"/><ellipse cx="116" cy="96" rx="12" ry="24" fill="#6B4A3A"/><circle cx="80" cy="84" r="36" fill="#FFE4CC"/><path d="M46 72 Q52 48 74 52 Q80 42 92 48 Q108 46 114 72 Q96 60 80 62 Q62 60 46 72 Z" fill="#6B4A3A"/><path d="M59.2 84 Q67 90.5 74.8 84" fill="none" stroke-width="5.2"/><path d="M85.2 84 Q93 90.5 100.8 84" fill="none" stroke-width="5.2"/><line x1="58" y1="76" x2="63" y2="73" stroke-width="3.5"/><line x1="102" y1="76" x2="97" y2="73" stroke-width="3.5"/><path d="M74 98 Q80 103 86 98" fill="none" stroke-width="4"/><circle cx="54" cy="96" r="6" fill="#FF9D8A" opacity=".8" stroke="none"/><circle cx="106" cy="96" r="6" fill="#FF9D8A" opacity=".8" stroke="none"/><circle cx="112" cy="52" r="6" fill="#F272A8"/><circle cx="120" cy="58" r="6" fill="#F272A8"/><circle cx="116" cy="64" r="6" fill="#F272A8"/><circle cx="116" cy="58" r="4" fill="#FFC53D" stroke="none"/></g></svg>`,
+
+jijiB:()=>`<svg viewBox="0 0 160 160"><g stroke="#33302E" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="80" cy="150" rx="44" ry="6" fill="#33302E" opacity=".1" stroke="none"/><rect x="46" y="116" width="68" height="36" rx="15" fill="#4CB944"/><circle cx="80" cy="80" r="40" fill="#FFDDBF"/><path d="M42 76 Q40 40 80 40 Q120 40 118 76 Q112 56 96 54 Q98 60 92 58 Q84 50 64 56 Q50 60 42 76 Z" fill="#B4B2A9"/><circle cx="64" cy="82" r="11" fill="none" stroke-width="4"/><circle cx="96" cy="82" r="11" fill="none" stroke-width="4"/><line x1="75" y1="82" x2="85" y2="82" stroke-width="4"/><path d="M59.2 83 Q64 87 68.8 83" fill="none" stroke-width="3.2"/><path d="M91.2 83 Q96 87 100.8 83" fill="none" stroke-width="3.2"/><path d="M72 100 Q80 106 88 100" fill="none" stroke-width="4"/><circle cx="50" cy="96" r="5" fill="#FF9D8A" opacity=".7" stroke="none"/><circle cx="110" cy="96" r="5" fill="#FF9D8A" opacity=".7" stroke="none"/></g></svg>`,
+
+pandaB:()=>wrapN("0 0 160 160",shd(80,150,46)
+ +`<circle cx="46" cy="30" r="14" fill="#33302E"/><circle cx="114" cy="30" r="14" fill="#33302E"/>`
+ +`<g transform="rotate(-46 38 84)"><rect x="28" y="68" width="20" height="38" rx="10" fill="#33302E"/></g>`
+ +`<circle cx="24" cy="56" r="4" fill="#8A6A5A" stroke="none"/><circle cx="32" cy="50" r="3" fill="#8A6A5A" stroke="none"/><circle cx="24" cy="47" r="2.6" fill="#8A6A5A" stroke="none"/>`
+ +`<g transform="rotate(30 124 104)"><rect x="114" y="92" width="20" height="34" rx="10" fill="#33302E"/></g>`
+ +`<rect x="52" y="126" width="24" height="26" rx="11" fill="#33302E"/><rect x="84" y="126" width="24" height="26" rx="11" fill="#33302E"/>`
+ +`<ellipse cx="80" cy="106" rx="38" ry="32" fill="#FFFDF6"/>`
+ +`<circle cx="80" cy="56" r="38" fill="#FFFDF6"/>`
+ +`<g transform="rotate(-12 60 56)"><ellipse cx="60" cy="56" rx="12" ry="15" fill="#33302E" stroke="none"/></g>`
+ +`<g transform="rotate(12 100 56)"><ellipse cx="100" cy="56" rx="12" ry="15" fill="#33302E" stroke="none"/></g>`
+ +`<circle cx="62" cy="54" r="5.5" fill="#fff" stroke="none"/><path d="M56.6 54 Q62 58.5 67.4 54" fill="none" stroke-width="3.6"/>`
+ +`<circle cx="98" cy="54" r="5.5" fill="#fff" stroke="none"/><path d="M92.6 54 Q98 58.5 103.4 54" fill="none" stroke-width="3.6"/>`
+ +`<ellipse cx="80" cy="68" rx="5.5" ry="4" fill="#33302E" stroke="none"/>`
+ +`<path d="M73 78 Q80 84 87 78" fill="none" stroke-width="3.5"/>`
+ +cheekB(52,72,.85)+cheekB(108,72,.85)),
+
+kumoB:()=>wrapN("0 0 160 160",shd(80,150,40)
+ +`<path d="M80 2 L80 34" fill="none" stroke-width="4"/>`
+ +`<path d="M46 86 Q28 90 22 106 M50 98 Q36 106 34 122 M56 108 Q46 118 46 132 M114 86 Q132 90 138 106 M110 98 Q124 106 126 122 M104 108 Q114 118 114 132 M62 114 Q56 126 58 138 M98 114 Q104 126 102 138" fill="none" stroke="#2B4C8C" stroke-width="5.5"/>`
+ +`<circle cx="80" cy="84" r="42" fill="#3E8DE3"/>`
+ +`<circle cx="80" cy="40" r="7" fill="#2B4C8C"/>`
+ +`<path d="M40 74 Q42 58 80 58 Q118 58 120 74 Q120 88 108 88 L52 88 Q40 88 40 74 Z" fill="#24427A"/>`
+ +`<ellipse cx="62" cy="74" rx="11" ry="12" fill="#fff"/>`
+ +`<ellipse cx="98" cy="74" rx="11" ry="12" fill="#fff"/>`
+ +`<path d="M58 76 Q64 81 70 76" fill="none" stroke-width="4"/>`
+ +`<path d="M90 76 Q96 81 102 76" fill="none" stroke-width="4"/>`
+ +`<path d="M80 42 L83 50 L91 50 L85 55 L87 63 L80 58 L73 63 L75 55 L69 50 L77 50 Z" fill="#FFC53D" stroke-width="3.5"/>`
+ +`<path d="M71 100 Q80 108 89 100" fill="none" stroke-width="3.5"/>`
+ +cheekB(54,98,.85)+cheekB(106,98,.85)),
+
+rexB:()=>DN(shd(100,164,60)
+ +`<path d="M56 122 C 30 128 18 110 34 98 C 42 110 54 114 66 110 Z" fill="#FFC53D"/>`
+ +`<path d="M78 40 L70 22 L92 30 Z" fill="#4CB944"/>`
+ +`<path d="M104 32 L102 12 L122 24 Z" fill="#4CB944"/>`
+ +`<path d="M128 40 L134 22 L146 40 Z" fill="#4CB944"/>`
+ +`<rect x="74" y="124" width="24" height="34" rx="11" fill="#FFC53D"/>`
+ +`<rect x="112" y="124" width="24" height="34" rx="11" fill="#FFC53D"/>`
+ +`<path d="M78 152 L82 158 M88 152 L92 158 M116 152 L120 158 M126 152 L130 158" fill="none" stroke-width="3.5" stroke="#fff"/>`
+ +`<ellipse cx="102" cy="110" rx="40" ry="36" fill="#FFC53D"/>`
+ +`<ellipse cx="102" cy="122" rx="24" ry="19" fill="#FFF0C2" stroke="none"/>`
+ +`<g transform="rotate(22 72 96)"><rect x="62" y="90" width="20" height="12" rx="6" fill="#FFC53D"/></g>`
+ +`<g transform="rotate(-22 134 96)"><rect x="124" y="90" width="20" height="12" rx="6" fill="#FFC53D"/></g>`
+ +`<circle cx="102" cy="58" r="38" fill="#FFC53D"/>`
+ +`<circle cx="88" cy="44" r="2.5" fill="#33302E" stroke="none"/><circle cx="116" cy="44" r="2.5" fill="#33302E" stroke="none"/>`
+ +`<path d="M79.7 50 Q86 55.25 92.3 50" fill="none" stroke-width="4.2"/>`+`<path d="M111.7 50 Q118 55.25 124.3 50" fill="none" stroke-width="4.2"/>`
+ +`<path d="M76 68 Q102 92 128 68 Q118 86 102 86 Q86 86 76 68 Z" fill="#C0392B"/>`
+ +`<path d="M79 70 L85 78 L91 71 L97 80 L102 72 L107 80 L113 71 L119 78 L125 70" fill="#fff" stroke-width="3.5"/>`
+ +cheekB(70,62)+cheekB(134,62)),
+
+braB:()=>DN(shd(96,162,58)
+ +`<path d="M150 128 C 172 124 180 108 168 100 C 162 108 152 112 142 112 Z" fill="#4CB944"/>`
+ +`<rect x="70" y="126" width="26" height="32" rx="12" fill="#4CB944"/><rect x="110" y="126" width="26" height="32" rx="12" fill="#4CB944"/>`
+ +`<path d="M74 154 L78 160 M88 154 L92 160 M114 154 L118 160 M124 154 L128 160" fill="none" stroke-width="3.5" stroke="#fff"/>`
+ +`<ellipse cx="98" cy="112" rx="46" ry="34" fill="#4CB944"/>`
+ +`<ellipse cx="94" cy="124" rx="28" ry="15" fill="#A8E29A" stroke="none"/>`
+ +`<path d="M108 96 Q124 60 116 28 Q104 14 90 20 Q98 54 96 94 Z" fill="#4CB944"/>`
+ +`<circle cx="92" cy="26" r="28" fill="#4CB944"/>`
+ +`<path d="M78 96 Q86 88 96 90" fill="none" stroke="#fff" stroke-width="3"/>`
+ +`<path d="M78.9 22 Q84 26.25 89.1 22" fill="none" stroke-width="3.4"/>`+`<path d="M96.9 20 Q102 24.25 107.1 20" fill="none" stroke-width="3.4"/>`
+ +`<path d="M78 30 Q92 42 106 28 Q98 38 92 38 Q86 38 78 30 Z" fill="#C0392B"/>`
+ +`<path d="M81 31 L85 36 L89 32 L93 37 L97 32 L101 36 L105 31" fill="#fff" stroke-width="3"/>`
+ +cheekB(78,26,.7)+cheekB(108,24,.7))
+});
+try{seasonHats();}catch(e){}
 buildTitle();buildHome();show('title');loop();
 </script>
 </body>
