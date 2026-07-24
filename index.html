@@ -13,7 +13,7 @@
 <script>if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}</script>
 <meta name="apple-mobile-web-app-title" content="りんたろう">
 <meta name="theme-color" content="#BDE7FF">
-<title>りんたろうのせかい v6.6</title>
+<title>りんたろうのせかい v6.7（えほん）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#BDE7FF;
@@ -38,6 +38,8 @@ svg{display:block;width:100%;height:100%;overflow:visible;}
 .btn{cursor:pointer;transition:transform .3s cubic-bezier(.3,1.9,.45,1),filter .18s ease;}
 .btn:active{transform:scale(.93);filter:brightness(.96);transition:transform .07s ease,filter .07s ease;}
 *{-webkit-tap-highlight-color:transparent;}
+#app svg{filter:url(#carle);}
+#app svg g[stroke="#33302E"]{stroke:#7A5A40;stroke-width:3px;}
 .roundbtn{position:absolute;display:flex;align-items:center;justify-content:center;background:var(--paper);border:var(--bd-card) solid var(--ink);border-radius:50%;box-shadow:var(--sh-2);z-index:20;}
 .tile{position:relative;width:86%;border:var(--bd-card) solid var(--ink);border-radius:6vmin;box-shadow:var(--sh-2);overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 5vmin;}
 .tile .lbl{font-size:5.8vmin;z-index:2;white-space:nowrap;text-shadow:0 2px 0 rgba(255,255,255,.65);}
@@ -149,6 +151,20 @@ svg{display:block;width:100%;height:100%;overflow:visible;}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<filter id="carle" x="-12%" y="-12%" width="124%" height="124%">
+ <feTurbulence type="fractalNoise" baseFrequency="0.014 0.02" numOctaves="2" seed="7" result="warp"/>
+ <feDisplacementMap in="SourceGraphic" in2="warp" scale="6" xChannelSelector="R" yChannelSelector="G" result="disp"/>
+ <feTurbulence type="fractalNoise" baseFrequency="0.09 0.12" numOctaves="2" seed="4" result="blotch"/>
+ <feColorMatrix in="blotch" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 -.12" result="blotchA"/>
+ <feComposite in="blotchA" in2="disp" operator="in" result="lp"/>
+ <feBlend in="disp" in2="lp" mode="soft-light" result="mot"/>
+ <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="9" result="tooth"/>
+ <feColorMatrix in="tooth" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .22 -.06" result="toothA"/>
+ <feComposite in="toothA" in2="mot" operator="in" result="tc"/>
+ <feBlend in="mot" in2="tc" mode="multiply"/>
+</filter>
+</defs></svg>
 <div id="app">
  <section id="scr-title" class="sky"></section>
  <section id="scr-home" class="sky"></section>
@@ -181,7 +197,7 @@ const spark=(x,y,s,c)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0
 const wrap=(vb,inner)=>`<svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><g stroke="${OUT}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 const V=i=>wrap("0 0 200 130",i), D=i=>wrap("0 0 200 170",i), A=i=>wrap("0 0 160 160",i);
 /* v6 新画風ヘルパー（スタイルボード準拠・細線） */
-const GAME_VER='v6.6';
+const GAME_VER='v6.7';
 function timeTint(){const h=new Date().getHours();
  if(h>=19||h<5)return{g:'linear-gradient(rgba(34,36,92,.5),rgba(70,58,130,.32))',night:1};
  if(h>=16)return{g:'linear-gradient(rgba(255,140,60,.26),rgba(255,186,96,.16))'};
