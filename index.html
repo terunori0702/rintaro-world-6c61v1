@@ -11116,7 +11116,9 @@ function zukanRender(){
    const key=ch.dataset.jump;
    const MAPSEC={'のりもの':'のりもの','きょうりゅう':'きょうりゅうのあかちゃん','かぞく':'かぞく','なかま':'なかま','うみ':'うみのなかま','むし':'むしのなかま','とり':'とりのなかま','こだい':'こだいのなかま','どうぶつ':'どうぶつのなかま','たべもの':'たべもののなかま','ボス':'ボス（ともだちに なった！）','スポーツ':'スポーツなかま'};
    const h=[...list.querySelectorAll('.zk-h')].find(e=>e.dataset.sec===MAPSEC[key]);
-   if(h){const tabsH=list.querySelector('#zk-tabs').offsetHeight;list.scrollTo({top:Math.max(0,h.offsetTop-tabsH-16),behavior:'smooth'});}});});
+   if(h){const tabsH=list.querySelector('#zk-tabs').offsetHeight;
+    const lr=list.getBoundingClientRect(),hr=h.getBoundingClientRect();
+    list.scrollTo({top:Math.max(0,list.scrollTop+(hr.top-lr.top)-tabsH-10),behavior:'smooth'});}});});
  list.querySelectorAll('.zk-card').forEach(cd=>{
   const c2=(S.dinoLv||{})[cd.dataset.id]||0;
   if(cd.dataset.has==='1'&&c2>=3){
@@ -11148,8 +11150,9 @@ function zkZoom(id,cardEl){
  const card=el('div');
  card.style.cssText='width:78vmin;max-width:92vw;background:#FFFDF6;border:1.1vmin solid #33302E;border-radius:7vmin;padding:5vmin 4vmin 3.5vmin;display:flex;flex-direction:column;align-items:center;gap:2vmin;animation:hatch .55s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1.6vmin 0 rgba(51,48,46,.2);';
  card.innerHTML=`<div class="zoomArt" style="width:58vmin;height:58vmin;">${cc.art()}</div>
-  <div class="lbl" style="font-size:6.4vmin;">${cc.n}</div>
+  <div class="lbl zoomName" style="font-size:6.4vmin;width:100%;text-align:center;white-space:nowrap;">${cc.n}</div>
   <div class="lbl" style="font-size:2.9vmin;color:#7A756C;">キャラを タップすると もういっかい なくよ</div>`;
+ fitAll(card,'.zoomName');
  ov.addEventListener('pointerdown',e=>{
   const art=e.target.closest('.zoomArt');
   if(art){e.stopPropagation();zkSoundFor(id);voice(cc.n);reAnim(art,'anim-jump');return;}
