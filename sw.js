@@ -1,4 +1,4 @@
-const CACHE='rintaro-world-v610-20260726b';
+const CACHE='rintaro-world-v70-20260730a';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
